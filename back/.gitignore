@@ -1,0 +1,16 @@
+coverage/
+node_modules/
+npm-debug.log*
+yarn*
+.nyc_output
+lib
+lib_test
+
+# Ide import remove
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
