@@ -21,14 +21,19 @@ app.use(
   session({
     resave: true,
     saveUninitialized: true,
-    secret: process.env._SECRET_SESSION || "Node kafka by Maissacrement"
+    secret: process.env.SECRET_SESSION || "This secret need be never read in production"
   })
 );
 
 // Function
 
 // Cors config
-const header = (_: any, res: any, next: any) => {
+const header = (
+  _: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  // Set header
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",

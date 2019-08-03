@@ -1,4 +1,4 @@
-# Micro service node
+# CatMash
 
 ## Node
 
@@ -12,14 +12,13 @@ build : `yarn build`
 ## Run my micro service on docker
 
 ```bash
-BUILD: `docker build -t nodeforkafka .`
-RUN: `docker run -p 8082:8082 -ti -d --name nodeforkafka nodeforkafka`
+BUILD: `docker build -t catmash .`
+RUN: `docker run -p 8082:8082 -ti -d --name catmashservice catmash`
 
-START: `docker start nodeforkafka`
-STOP: `docker stop nodeforkafka`
-REMOVE: `docker rm nodeforkafka`
+START: `docker start catmashservice`
+STOP: `docker stop catmashservice`
+REMOVE: `docker rm catmashservice`
 ```
 
-## RUN NODE SERVICE
-cmd: `docker exec -i -t nodeforkafka yarn dev`
-
+## RUN ANY CMDLINE ON ALPINE
+cmd: `docker exec -i -t catmashservice ${CMD_LINE}`
