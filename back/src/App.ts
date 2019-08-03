@@ -7,8 +7,29 @@ import session = require("express-session");
 // Create a new express application instance
 const app: express.Application = express();
 
+// Function
+const parseAnyToNumber = (anyTypeOfValue: any): number => {
+  let number: number = 0;
+  const typeOfArg : string = typeof anyTypeOfValue;
+
+  switch(typeOfArg){
+    case 'string':
+      number = parseInt(`${anyTypeOfValue}`);
+
+      break;
+    case 'number':
+      number = anyTypeOfValue
+
+      break;
+    default:
+      console.log("cannot resolve this variable")
+  }
+
+  return !(number === 0) ? number : 8082;
+}
+
 // Constants
-const PORT = process.env.PORT || 8082;
+const PORT: number = parseAnyToNumber(process.env.PORT) ;
 
 // My controller
 import routes from "./routes/index";

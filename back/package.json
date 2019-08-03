@@ -18,13 +18,14 @@
     "coverage": "nyc --include=\"src/**/*.ts\" --reporter=text --reporter=html --reporter=lcov mocha --compilers ts:ts-node/register --recursive \"test/**/*-spec.ts\"",
     "watch": "npm run build -- --watch",
     "watch:test": "npm run test -- --watch",
-    "dev": "node --inspect=5858 -r ts-node/register src/App.ts",
-    "dev:nodebug": "ts-node-dev --respawn --transpileOnly src/App.ts"
+    "dev": "node --inspect=5858 -r ts-node/register bin/dev",
+    "dev:nodebug": "ts-node-dev --respawn --transpileOnly bin/dev"
   },
   "dependencies": {
     "@types/cors": "^2.8.5",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "kafka-node": "^4.1.3",
