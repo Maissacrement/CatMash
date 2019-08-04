@@ -1,6 +1,6 @@
 // External Module Load
 //import BadRequest from "../src/routes/endpoints/badRequest";
-import router from "../src/routes/index";
+import router from "../../src/routes/index";
 import * as chai from "chai";
 import chaiHttp = require("chai-http");
 import * as supertest from "supertest";
