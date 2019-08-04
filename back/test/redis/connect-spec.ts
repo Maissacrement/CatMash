@@ -19,20 +19,4 @@ describe("Vote API", function() {
       assert.equal(true, stateOfPingOnRedis());
     });
   });
-  describe("addCat", function() {
-    it("should return 1 if the cat is added successfully", function() {
-      assert.equal(
-        1,
-        db.hmset(
-          ["key2", "test keys 1", "test val 1", "test keys 2", 2],
-          function(err, res) {
-            if (err) {
-              throw new Error(`${err}`);
-            }
-            console.log(res);
-          }
-        )
-      );
-    });
-  });
 });

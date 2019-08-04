@@ -1,4 +1,4 @@
-import db from '../../db/index'
+import db from "../../db/index";
 
 const addCatOnDb = (_: any, res: any) => {
   console.log(db);

@@ -9,6 +9,11 @@ test : `yarn test`
 build : `yarn build`
 ```
 
+## Redis DB
+
+### CLI use command line
+cmd : `redis-cli`
+
 ## Run my micro service on docker
 
 ```bash
