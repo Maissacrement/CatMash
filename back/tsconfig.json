@@ -8,7 +8,7 @@
       "dom",
       "es2017"
     ],
-    "target": "es2015",
+    "target": "ES2017",
     "outDir": "./lib",
     "removeComments": true,
     "inlineSourceMap": true,
