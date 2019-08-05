@@ -1,6 +1,6 @@
 // External Module Load
 //import BadRequest from "../src/routes/endpoints/badRequest";
-import router from "../src/routes/index";
+import router from "../../src/routes/index";
 import * as chai from "chai";
 import chaiHttp = require("chai-http");
 import * as supertest from "supertest";
@@ -21,7 +21,8 @@ describe("BadRequest test", () => {
       .get("/dfezfezfezfezdza")
       .then(value => {
         expect(value.body).to.be.a("object");
-        console.log(expect(value.body));
+        expect(value.body.message).to.equal("Path not found");
+        expect(value.body.status).to.equal(404);
 
         done();
       })
