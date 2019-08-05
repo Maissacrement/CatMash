@@ -10,8 +10,12 @@ export default class RedisManager {
   // Key: Value
 
   // Inc a key start on 0 is nb is undefined
-  incValueOfKey(idVariableToIncrement: string, callback: Function): boolean {
+  incValueOfKey(idVariableToIncrement: string, callback?: Function): boolean {
     return this.db.incr(idVariableToIncrement, callback);
+  }
+
+  decrValueOfKey(idVariableToIncrement: string, callback?: Function): boolean {
+    return this.db.decr(idVariableToIncrement, callback);
   }
 
   public getValueByKeyId(keyId: string, callback?: Function): boolean {
@@ -45,6 +49,10 @@ export default class RedisManager {
 
   incValueOfTableKey(uniqueIdOfElment: string, fieldName: string): boolean {
     return this.db.hincrby(uniqueIdOfElment, fieldName, 1);
+  }
+
+  decrValueOfTableKey(uniqueIdOfElment: string, fieldName: string): boolean {
+    return this.db.hincrby(uniqueIdOfElment, fieldName, -1);
   }
 
   // Manage Error

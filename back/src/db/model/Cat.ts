@@ -82,7 +82,6 @@ export default class Cat {
       }
 
       // Success
-
       // Recover state after execution of the function
       const exec: boolean = this.createCat(catId);
 
@@ -90,8 +89,9 @@ export default class Cat {
       if (!exec) {
         throw new Error("Methods createCat not return true");
       }
+
+      // On success execute or not a callback
       if(callback){
-        // On success
         callback(catId);
       }
     };
