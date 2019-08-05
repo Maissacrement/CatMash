@@ -49,15 +49,15 @@ export default class Cat {
   }
 
   public getCat(catId: string, callback?: Function): boolean {
-    return this.RedisManagerDb.getElementByTableId(catId, callback);
+    return this.RedisManagerDb.getIdByHash(catId, callback);
   }
 
   public getCatId(id: string, callback?: Function): boolean {
-    return this.RedisManagerDb.getValueByKeyId(id, callback);
+    return this.RedisManagerDb.getValueOfKey(id, callback);
   }
 
   public incLike(catId: number): boolean {
-    return this.RedisManagerDb.incValueOfTableKey(`cat:${catId}`, "like");
+    return this.RedisManagerDb.incrValueOfHashField(`cat:${catId}`, "like");
   }
 
   public createCat(catId: number): boolean {
@@ -70,7 +70,7 @@ export default class Cat {
       like: `${cat.like}` // Number of like
     };
 
-    return this.RedisManagerDb.addTable(catCompleteId, myCat);
+    return this.RedisManagerDb.addANewHash(catCompleteId, myCat);
   }
 
   public addNewCat(callback?: Function) {

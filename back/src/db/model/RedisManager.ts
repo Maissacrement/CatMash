@@ -10,30 +10,30 @@ export default class RedisManager {
   // Key: Value
 
   // Inc a key start on 0 is nb is undefined
-  incValueOfKey(idVariableToIncrement: string, callback?: Function): boolean {
-    return this.db.incr(idVariableToIncrement, callback);
+  public incValueOfKey(key: string, callback?: Function): boolean {
+    return this.db.incr(key, callback);
   }
 
-  decrValueOfKey(idVariableToIncrement: string, callback?: Function): boolean {
-    return this.db.decr(idVariableToIncrement, callback);
+  public decrValueOfKey(key: string, callback?: Function): boolean {
+    return this.db.decr(key, callback);
   }
 
-  public getValueByKeyId(keyId: string, callback?: Function): boolean {
-    return this.db.get(keyId, (err: any, reply: any) => {
+  public getValueOfKey(key: string, callback?: Function): boolean {
+    return this.db.get(key, (err: any, reply: any) => {
       // if error throw error
       this.rejectErr(err);
 
-      // Success
+      // Success : "Value"
       if (callback) {
         callback(reply);
       }
     });
   }
 
-  // Tab {`masterId`, 'field1', 'keyFromField1', ...}
+  // Tab {`hash`, 'field1', 'keyFromField1', ...}
 
-  public getElementByTableId(id: string, callback?: Function): boolean {
-    return this.db.hgetall(id, (err: any, object: any) => {
+  public getIdByHash(hash: string, callback?: Function): boolean {
+    return this.db.hgetall(hash, (err: any, object: any) => {
       this.rejectErr(err);
 
       // Success
@@ -43,15 +43,15 @@ export default class RedisManager {
     });
   }
 
-  addTable(uniqueIdOfElment: string, objectAssociateToElement: any): boolean {
-    return this.db.hmset(uniqueIdOfElment, objectAssociateToElement);
+  public addANewHash(hash: string, collectionFieldValue: any): boolean {
+    return this.db.hmset(hash, collectionFieldValue);
   }
 
-  incValueOfTableKey(uniqueIdOfElment: string, fieldName: string): boolean {
-    return this.db.hincrby(uniqueIdOfElment, fieldName, 1);
+  public incrValueOfHashField(hash: string, fieldName: string): boolean {
+    return this.db.hincrby(hash, fieldName, 1);
   }
 
-  decrValueOfTableKey(uniqueIdOfElment: string, fieldName: string): boolean {
+  public decrValueOfHashField(uniqueIdOfElment: string, fieldName: string): boolean {
     return this.db.hincrby(uniqueIdOfElment, fieldName, -1);
   }
 
