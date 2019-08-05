@@ -14,7 +14,7 @@ export default class RedisManager {
     return this.db.incr(idVariableToIncrement, callback);
   }
 
-  public getKeyById(keyId: string, callback?: Function): boolean {
+  public getValueByKeyId(keyId: string, callback?: Function): boolean {
     return this.db.get(keyId, (err: any, reply: any) => {
       // if error throw error
       this.rejectErr(err);
@@ -43,7 +43,7 @@ export default class RedisManager {
     return this.db.hmset(uniqueIdOfElment, objectAssociateToElement);
   }
 
-  incValueOfTabKey(uniqueIdOfElment: string, fieldName: string): boolean {
+  incValueOfTableKey(uniqueIdOfElment: string, fieldName: string): boolean {
     return this.db.hincrby(uniqueIdOfElment, fieldName, 1);
   }
 
@@ -54,5 +54,4 @@ export default class RedisManager {
       throw new Error(`${err}`);
     }
   }
-
 }

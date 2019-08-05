@@ -8,7 +8,7 @@ const addCatOnDb = (_: any, res: any) => {
 
   const isCreate = newCat.addCatOnRedis();
 
-  if(isCreate){
+  if (isCreate) {
     res.status(200).json({ message: "User create successfully", status: 200 });
   } else {
     res.status(200).json({ message: "User is not create", status: 400 });

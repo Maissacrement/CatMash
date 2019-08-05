@@ -1,4 +1,4 @@
-import db from "../index";
+import RedisManager from "./RedisManager";
 
 // Interface
 interface CatArgs {
@@ -18,6 +18,7 @@ export default class Cat {
   private actif: boolean;
   private like: number;
   private id: string;
+  private RedisManagerDb: RedisManager;
 
   constructor(cat: CatArgs) {
     this.image = cat.image;
@@ -25,10 +26,11 @@ export default class Cat {
 
     this.actif = true;
     this.like = 0;
-    this.id = '';
+    this.id = "";
+    this.RedisManagerDb = new RedisManager();
   }
 
-  public setId(id: string): void  {
+  public setId(id: string): void {
     this.id = id;
   }
 
@@ -43,43 +45,29 @@ export default class Cat {
   }
 
   public getCat(catId: string, callback?: Function): boolean {
-    return db.hgetall(catId, (err, object) => {
-      // if error throw error
-      this.rejectErr(err);
-
-      // Success
-      if (callback) {
-        callback(object);
-      }
-    });
+    return this.RedisManagerDb.getElementByTableId(catId, callback);
   }
 
   public getCatId(id: string, callback?: Function): boolean {
-    return db.get(id, (err, reply) => {
-      // if error throw error
-      this.rejectErr(err);
-
-      // Success
-      if (callback) {
-        callback(reply);
-      }
-    });
+    return this.RedisManagerDb.getValueByKeyId(id, callback);
   }
 
   public incLike(catId: number): boolean {
-    return db.hincrby(`cat:${catId}`, "like", 1);
+    return this.RedisManagerDb.incValueOfTableKey(`cat:${catId}`, "like");
   }
 
   public createCat(catId: number): boolean {
     const cat = this.get();
-    this.setId(`cat:${catId}`);
-
-    return db.hmset(`cat:${catId}`, {
+    const catCompleteId = `cat:${catId}`;
+    this.setId(catCompleteId);
+    const myCat = {
       image: cat.image, // ImageUrl
       idAtelierApi: cat.idAtelierApi, // Id of cat in latelier.co
       actif: `${cat.actif}`, // Is always available in `latelier.co`
       like: `${cat.like}` // Number of like
-    });
+    };
+
+    return this.RedisManagerDb.addTable(catCompleteId, myCat);
   }
 
   public addNewCat() {
@@ -106,8 +94,8 @@ export default class Cat {
     let created: boolean = false;
 
     // Create a new cat on success
-    created = db.incr("catId", this.addNewCat());
-    console.log(this.get())
+    created = this.RedisManagerDb.incValueOfKey("catId", this.addNewCat());
+    console.log(this.get());
 
     return created;
   }
