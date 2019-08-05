@@ -9,6 +9,7 @@ interface CatArgs {
 interface CatFull extends CatArgs {
   actif: boolean;
   like: number;
+  id: string;
 }
 
 export default class Cat {
@@ -16,6 +17,7 @@ export default class Cat {
   private idAtelierApi: string;
   private actif: boolean;
   private like: number;
+  private id: string;
 
   constructor(cat: CatArgs) {
     this.image = cat.image;
@@ -23,6 +25,11 @@ export default class Cat {
 
     this.actif = true;
     this.like = 0;
+    this.id = '';
+  }
+
+  public setId(id: string): void  {
+    this.id = id;
   }
 
   public get(): CatFull {
@@ -30,32 +37,42 @@ export default class Cat {
       image: this.image,
       actif: this.actif,
       idAtelierApi: this.idAtelierApi,
-      like: this.like
+      like: this.like,
+      id: this.id
     };
   }
 
-  public getCat(catId: string): boolean {
+  public getCat(catId: string, callback?: Function): boolean {
     return db.hgetall(catId, (err, object) => {
       // if error throw error
       this.rejectErr(err);
 
       // Success
-      console.log(object);
+      if (callback) {
+        callback(object);
+      }
     });
   }
 
-  public getCatId(id: string): boolean {
+  public getCatId(id: string, callback?: Function): boolean {
     return db.get(id, (err, reply) => {
       // if error throw error
       this.rejectErr(err);
 
       // Success
-      console.log(reply);
+      if (callback) {
+        callback(reply);
+      }
     });
+  }
+
+  public incLike(catId: number): boolean {
+    return db.hincrby(`cat:${catId}`, "like", 1);
   }
 
   public createCat(catId: number): boolean {
     const cat = this.get();
+    this.setId(`cat:${catId}`);
 
     return db.hmset(`cat:${catId}`, {
       image: cat.image, // ImageUrl
@@ -65,23 +82,22 @@ export default class Cat {
     });
   }
 
-  private addNewCat() {
+  public addNewCat() {
     return (err: any, catId: number) => {
       // if error throw error
       this.rejectErr(err);
+      if (!catId) {
+        throw new Error("Cat id is undefined");
+      }
 
       // Success
-      
+
       // Recover state after execution of the function
       const exec: boolean = this.createCat(catId);
 
-      // Create cat
-      if (exec) {
-        // Cat is registered
-        process.stdout.write("Cat has been create successfully!");
-      } else {
-        // Cat reject
-        process.stdout.write("Cat not registered");
+      // test is fonction is execute
+      if (!exec) {
+        throw new Error("Methods createCat not return true");
       }
     };
   }
@@ -90,7 +106,8 @@ export default class Cat {
     let created: boolean = false;
 
     // Create a new cat on success
-    created = db.incr("catId", this.addNewCat);
+    created = db.incr("catId", this.addNewCat());
+    console.log(this.get())
 
     return created;
   }
