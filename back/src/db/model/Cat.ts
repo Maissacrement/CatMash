@@ -34,33 +34,46 @@ export default class Cat {
     };
   }
 
+  public getCat(catId: string): boolean {
+    return db.hgetall(catId, (err, object) => {
+      // if error throw error
+      this.rejectErr(err);
+
+      // Success
+      console.log(object);
+    });
+  }
+
+  public getCatId(id: string): boolean {
+    return db.get(id, (err, reply) => {
+      // if error throw error
+      this.rejectErr(err);
+
+      // Success
+      console.log(reply);
+    });
+  }
+
   public createCat(catId: number): boolean {
     const cat = this.get();
 
-    return db.hmset(
-      `cat:${catId}`, // Cat Id
-      "image",
-      cat.image, // ImageUrl
-      "idAtelierApi",
-      cat.idAtelierApi, // Id of cat in latelier.co
-      "actif",
-      `${cat.actif}`, // Is always available in `latelier.co`
-      "like",
-      `${cat.like}` // Number of like
-    );
+    return db.hmset(`cat:${catId}`, {
+      image: cat.image, // ImageUrl
+      idAtelierApi: cat.idAtelierApi, // Id of cat in latelier.co
+      actif: `${cat.actif}`, // Is always available in `latelier.co`
+      like: `${cat.like}` // Number of like
+    });
   }
 
-  public addCatOnRedis(): boolean {
-    const createCatState = (newCat: any) => this.createCat(newCat);
-    let created: boolean = false;
+  private addNewCat() {
+    return (err: any, catId: number) => {
+      // if error throw error
+      this.rejectErr(err);
 
-    const addNewCat = (err: any, catId: number) => {
-      if (err) {
-        throw new Error(`${err}`);
-      }
-
+      // Success
+      
       // Recover state after execution of the function
-      const exec: boolean = createCatState(catId);
+      const exec: boolean = this.createCat(catId);
 
       // Create cat
       if (exec) {
@@ -71,16 +84,20 @@ export default class Cat {
         process.stdout.write("Cat not registered");
       }
     };
+  }
 
-    // if err throw
-    created = db.incr("catId", addNewCat);
+  public addCatOnRedis(): boolean {
+    let created: boolean = false;
+
+    // Create a new cat on success
+    created = db.incr("catId", this.addNewCat);
 
     return created;
   }
 
-  public toString(): string {
-    return `Bonjour, l'id de votre chat est le :
-      ${this.idAtelierApi}! Son url: ${this.image}!
-      ${this.like}, ${this.actif}`;
+  private rejectErr(err: any): void {
+    if (err) {
+      throw new Error(`${err}`);
+    }
   }
 }
