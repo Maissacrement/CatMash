@@ -34,19 +34,48 @@ export default class Cat {
     };
   }
 
-  public addCatOnRedisDb(): void {
-    const elementToInsert = this.get();
-    process.stdout.write(JSON.stringify(elementToInsert, null, 2));
+  public createCat(catId: number): boolean {
+    const cat = this.get();
 
-    db.hmset(
-      ["key2", "test keys 1", "test val 1", "test keys 2", "test val 2"],
-      function(err, res) {
-        if (err) {
-          throw new Error(`${err}`);
-        }
-        console.log(res);
-      }
+    return db.hmset(
+      `cat:${catId}`, // Cat Id
+      "image",
+      cat.image, // ImageUrl
+      "idAtelierApi",
+      cat.idAtelierApi, // Id of cat in latelier.co
+      "actif",
+      `${cat.actif}`, // Is always available in `latelier.co`
+      "like",
+      `${cat.like}` // Number of like
     );
+  }
+
+  public addCatOnRedis(): boolean {
+    const createCatState = (newCat: any) => this.createCat(newCat);
+    let created: boolean = false;
+
+    const addNewCat = (err: any, catId: number) => {
+      if (err) {
+        throw new Error(`${err}`);
+      }
+
+      // Recover state after execution of the function
+      const exec: boolean = createCatState(catId);
+
+      // Create cat
+      if (exec) {
+        // Cat is registered
+        process.stdout.write("Cat has been create successfully!");
+      } else {
+        // Cat reject
+        process.stdout.write("Cat not registered");
+      }
+    };
+
+    // if err throw
+    created = db.incr("catId", addNewCat);
+
+    return created;
   }
 
   public toString(): string {

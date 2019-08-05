@@ -21,7 +21,8 @@ describe("BadRequest test", () => {
       .get("/dfezfezfezfezdza")
       .then(value => {
         expect(value.body).to.be.a("object");
-        console.log(expect(value.body));
+        expect(value.body.message).to.equal("Path not found");
+        expect(value.body.status).to.equal(404);
 
         done();
       })
