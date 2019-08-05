@@ -17,7 +17,7 @@ export default class Cat {
   private idAtelierApi: string;
   private actif: boolean;
   private like: number;
-  private id: string;
+  public id: string;
   private RedisManagerDb: RedisManager;
 
   constructor(cat: CatArgs) {
@@ -44,6 +44,10 @@ export default class Cat {
     };
   }
 
+  public currentId(): string {
+    return this.id;
+  }
+
   public getCat(catId: string, callback?: Function): boolean {
     return this.RedisManagerDb.getElementByTableId(catId, callback);
   }
@@ -57,9 +61,8 @@ export default class Cat {
   }
 
   public createCat(catId: number): boolean {
-    const cat = this.get();
+    let cat = this.get();
     const catCompleteId = `cat:${catId}`;
-    this.setId(catCompleteId);
     const myCat = {
       image: cat.image, // ImageUrl
       idAtelierApi: cat.idAtelierApi, // Id of cat in latelier.co
@@ -70,8 +73,8 @@ export default class Cat {
     return this.RedisManagerDb.addTable(catCompleteId, myCat);
   }
 
-  public addNewCat() {
-    return (err: any, catId: number) => {
+  public addNewCat(callback?: Function) {
+    return async (err: any, catId: number) => {
       // if error throw error
       this.rejectErr(err);
       if (!catId) {
@@ -87,20 +90,25 @@ export default class Cat {
       if (!exec) {
         throw new Error("Methods createCat not return true");
       }
+      if(callback){
+        // On success
+        callback(catId);
+      }
     };
   }
 
-  public addCatOnRedis(): boolean {
+  public addCatOnRedis(callback?: Function): boolean {
     let created: boolean = false;
 
     // Create a new cat on success
-    created = this.RedisManagerDb.incValueOfKey("catId", this.addNewCat());
+    created = this.RedisManagerDb
+                  .incValueOfKey("catId", this.addNewCat(callback));
     console.log(this.get());
 
     return created;
   }
 
-  private rejectErr(err: any): void {
+  public rejectErr(err: any): void {
     if (err) {
       throw new Error(`${err}`);
     }
