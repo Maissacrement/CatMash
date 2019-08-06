@@ -2,12 +2,12 @@ import Cat from "../../db/model/Cat";
 
 const addCatOnDb = (_: any, res: any) => {
   const newCat = new Cat({
-    image: "http://myimg.png",
-    idAtelierApi: "26"
+    idAtelierApi: "26",
+    image: "http://myimg.png"
   });
 
-  const isCreate = newCat.addCatOnRedis(
-    (id: any) => console.log(id)
+  const isCreate = newCat.addCatOnRedis((id: number) =>
+    process.stdout.write(`${id}`)
   );
 
   if (isCreate) {
@@ -20,11 +20,8 @@ const addCatOnDb = (_: any, res: any) => {
 const likeACat = (req: any, res: any) => {
   const id = req.query.id;
 
-  console.log(id);
+  process.stdout.write(id);
   res.end();
 };
 
-export {
-  addCatOnDb,
-  likeACat
-};
+export { addCatOnDb, likeACat };

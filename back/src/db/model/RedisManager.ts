@@ -1,5 +1,12 @@
 import db from "../index";
 
+interface TCat {
+  image: string;
+  idAtelierApi: string;
+  actif: boolean;
+  like: number;
+}
+
 export default class RedisManager {
   private db: any;
 
@@ -47,11 +54,27 @@ export default class RedisManager {
     return this.db.hmset(hash, collectionFieldValue);
   }
 
+  public bulkInsertOfhash(idName: string, object: Array<TCat>) {
+    let isValide = true; // Say if all the data is correctly recorded
+    for (let key in object) {
+      isValide =
+        this.incValueOfKey(`${idName}`, async (err: any, id: any) => {
+          this.rejectErr(err);
+          this.addANewHash(`${idName}:${id}`, object[key]);
+        }) && isValide;
+    }
+
+    return isValide;
+  }
+
   public incrValueOfHashField(hash: string, fieldName: string): boolean {
     return this.db.hincrby(hash, fieldName, 1);
   }
 
-  public decrValueOfHashField(uniqueIdOfElment: string, fieldName: string): boolean {
+  public decrValueOfHashField(
+    uniqueIdOfElment: string,
+    fieldName: string
+  ): boolean {
     return this.db.hincrby(uniqueIdOfElment, fieldName, -1);
   }
 

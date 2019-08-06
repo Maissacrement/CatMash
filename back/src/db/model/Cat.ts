@@ -1,12 +1,12 @@
 import RedisManager from "./RedisManager";
 
 // Interface
-interface CatArgs {
+interface ICatArgs {
   image: string;
   idAtelierApi: string;
 }
 
-interface CatFull extends CatArgs {
+interface ICatFull extends ICatArgs {
   actif: boolean;
   like: number;
   id: string;
@@ -17,10 +17,10 @@ export default class Cat {
   private idAtelierApi: string;
   private actif: boolean;
   private like: number;
-  public id: string;
+  private id: string;
   private RedisManagerDb: RedisManager;
 
-  constructor(cat: CatArgs) {
+  constructor(cat: ICatArgs) {
     this.image = cat.image;
     this.idAtelierApi = cat.idAtelierApi;
 
@@ -34,13 +34,13 @@ export default class Cat {
     this.id = id;
   }
 
-  public get(): CatFull {
+  public get(): ICatFull {
     return {
-      image: this.image,
       actif: this.actif,
+      id: this.id,
       idAtelierApi: this.idAtelierApi,
-      like: this.like,
-      id: this.id
+      image: this.image,
+      like: this.like
     };
   }
 
@@ -48,11 +48,11 @@ export default class Cat {
     return this.id;
   }
 
-  public getCat(catId: string, callback?: Function): boolean {
+  public getCat(catId: string, callback?: (data: any) => void): boolean {
     return this.RedisManagerDb.getIdByHash(catId, callback);
   }
 
-  public getCatId(id: string, callback?: Function): boolean {
+  public getCatId(id: string, callback?: (data: any) => void): boolean {
     return this.RedisManagerDb.getValueOfKey(id, callback);
   }
 
@@ -61,19 +61,19 @@ export default class Cat {
   }
 
   public createCat(catId: number): boolean {
-    let cat = this.get();
+    const cat = this.get();
     const catCompleteId = `cat:${catId}`;
     const myCat = {
-      image: cat.image, // ImageUrl
-      idAtelierApi: cat.idAtelierApi, // Id of cat in latelier.co
       actif: `${cat.actif}`, // Is always available in `latelier.co`
+      idAtelierApi: cat.idAtelierApi, // Id of cat in latelier.co
+      image: cat.image, // ImageUrl
       like: `${cat.like}` // Number of like
     };
 
     return this.RedisManagerDb.addANewHash(catCompleteId, myCat);
   }
 
-  public addNewCat(callback?: Function) {
+  public addNewCat(callback?: (catId: number) => void) {
     return async (err: any, catId: number) => {
       // if error throw error
       this.rejectErr(err);
@@ -91,19 +91,20 @@ export default class Cat {
       }
 
       // On success execute or not a callback
-      if(callback){
+      if (callback) {
         callback(catId);
       }
     };
   }
 
-  public addCatOnRedis(callback?: Function): boolean {
+  public addCatOnRedis(callback?: (id: number) => void): boolean {
     let created: boolean = false;
 
     // Create a new cat on success
-    created = this.RedisManagerDb
-                  .incValueOfKey("catId", this.addNewCat(callback));
-    console.log(this.get());
+    created = this.RedisManagerDb.incValueOfKey(
+      "catId",
+      this.addNewCat(callback)
+    );
 
     return created;
   }

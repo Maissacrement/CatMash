@@ -1,7 +1,7 @@
-import db from "../../src/db/index";
 import assert = require("assert");
+import db from "../../src/db/index";
 
-describe("Redis API module testing ...", function() {
+describe("Redis API module testing ...", () => {
   describe("Redis", () => {
     it("should return true if connection is a success", () => {
       const stateOfPingOnRedis = (): boolean => {
