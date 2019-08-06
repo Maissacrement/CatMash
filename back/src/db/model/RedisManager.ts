@@ -14,7 +14,7 @@ export default class RedisManager {
     this.db = db;
   }
 
-  // Key: Value
+  // Manage Value of Key
 
   // Inc a key start on 0 is nb is undefined
   public incValueOfKey(
@@ -40,9 +40,9 @@ export default class RedisManager {
     });
   }
 
-  // Tab {`hash`, 'field1', 'keyFromField1', ...}
+  // Tab {`hash`, hash value: 'field1', 'keyFromField1', ...}
 
-  public getIdByHash(hash: string, callback?: (data: any) => void): boolean {
+  public getHashValue(hash: string, callback?: (data: any) => void): boolean {
     return this.db.hgetall(hash, (err: any, object: any) => {
       this.rejectErr(err);
 
@@ -52,6 +52,8 @@ export default class RedisManager {
       }
     });
   }
+
+  // Create an new Hash table
 
   public addANewHash(hash: string, collectionFieldValue: any): boolean {
     return this.db.hmset(hash, collectionFieldValue);
@@ -70,6 +72,83 @@ export default class RedisManager {
       }
     );
   }
+
+  // Manage Key Value
+
+  public incrValueOfHashField(hash: string, fieldName: string): boolean {
+    return this.db.hincrby(hash, fieldName, 1);
+  }
+
+  public decrValueOfHashField(
+    uniqueIdOfElment: string,
+    fieldName: string
+  ): boolean {
+    return this.db.hincrby(uniqueIdOfElment, fieldName, -1);
+  }
+
+  // SADD Members
+
+  public registeredOnSadd(tags: string, arg: string): boolean {
+    return this.db.sadd(tags, [arg], (err: any, reply: any) => {
+      this.rejectErr(err);
+      process.stdout.write(reply);
+    });
+  }
+
+  public addSaddMember(tags: string, arg: string): boolean {
+    const success = this.exists(tags, (err: any, found: boolean) => {
+      this.rejectErr(err);
+
+      return found
+        ? this.registeredOnSadd(tags, arg)
+        : this.acceptOnlySetType(tags, arg, this.registeredOnSadd);
+    });
+
+    return success;
+  }
+
+  // Manage Key availability
+
+  public exists(
+    variable: string,
+    callback?: (error: any, message: boolean) => void
+  ): boolean {
+    return this.db.exists(variable, callback);
+  }
+
+  // Manage Key Type
+
+  public type(variable: string, callback?: (message: string) => void): boolean {
+    return this.db.type(variable, (err: any, message: string): void => {
+      this.rejectErr(err);
+      if (callback) {
+        callback(message);
+      }
+    });
+  }
+
+  // Manage assigned value
+
+  public acceptOnlySetType(
+    tag: string,
+    arg: string,
+    callback?: (tag: string, arg: string) => void
+  ) {
+    return this.type(tag, (typeOfTag: string): void => {
+      if (typeOfTag === "set") {
+        if (callback) {
+          callback(tag, arg);
+          process.stdout.write("Request executed");
+        }
+      } else {
+        process.stdout.write(
+          "SADD not registred because tag is already define as a non-assignable type, please change tag"
+        );
+      }
+    });
+  }
+
+  // Work in progress
 
   public bulkInsertOfhash(
     nameOfArrayId: string,
@@ -126,75 +205,6 @@ export default class RedisManager {
       }
 
       process.stdout.write(`Bulk success ${replies}`);
-    });
-  }
-
-  public incrValueOfHashField(hash: string, fieldName: string): boolean {
-    return this.db.hincrby(hash, fieldName, 1);
-  }
-
-  public decrValueOfHashField(
-    uniqueIdOfElment: string,
-    fieldName: string
-  ): boolean {
-    return this.db.hincrby(uniqueIdOfElment, fieldName, -1);
-  }
-
-  // SADD Members
-  public registeredOnSadd(tags: string, arg: string): boolean {
-    return this.db.sadd(tags, [arg], (err: any, reply: any) => {
-      this.rejectErr(err);
-      console.log(reply);
-    });
-  }
-
-  public addSaddMember(tags: string, arg: string): boolean {
-    const success = this.exists(tags, (err: any, found: boolean) => {
-      this.rejectErr(err);
-
-      return found
-        ? this.registeredOnSadd(tags, arg)
-        : this.acceptOnlySetType(tags, arg, this.registeredOnSadd);
-    });
-
-    return success;
-  }
-
-  // Test is variable is already assign
-  public exists(
-    variable: string,
-    callback?: (error: any, message: boolean) => void
-  ): boolean {
-    return this.db.exists(variable, callback);
-  }
-
-  public type(variable: string, callback?: (message: string) => void): boolean {
-    return this.db.type(variable, (err: any, message: string): void => {
-      this.rejectErr(err);
-      if (callback) {
-        callback(message);
-      }
-    });
-  }
-
-  // Manage assigned value
-
-  public acceptOnlySetType(
-    tag: string,
-    arg: string,
-    callback?: (tag: string, arg: string) => void
-  ) {
-    return this.type(tag, (typeOfTag: string): void => {
-      if (typeOfTag === "set") {
-        if (callback) {
-          callback(tag, arg);
-          process.stdout.write("Request executed");
-        }
-      } else {
-        process.stdout.write(
-          "SADD not registred because tag is already define, please change tag"
-        );
-      }
     });
   }
 

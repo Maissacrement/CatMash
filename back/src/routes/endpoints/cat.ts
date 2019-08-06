@@ -36,10 +36,22 @@ const insertCat = (req: any, res: any) => {
   }
 };
 
-const likeACat = (req: any, res: any) => {
-  const id = req.query.id;
+const likeACat = (_: any, res: any) => {
+  const id = "catmash:182"; // req.query.id;
 
-  process.stdout.write(id);
+  const catBuilder = new CatBuilder();
+  const exec = catBuilder.incLike(id);
+
+  if (exec) {
+    catBuilder.getCatById(id, (data: any) => console.log(data););
+    res
+      .status(200)
+      .json({ message: "Success incremented like", status: 200 });
+  } else {
+    res.status(200).json({ message: "Error like is not incremented", status: 400 });
+  }
+
+  process.stdout.write(`\n${id}`);
   res.end();
 };
 
