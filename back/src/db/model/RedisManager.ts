@@ -1,6 +1,6 @@
 import db from "../index";
 
-interface TCat {
+interface ICat {
   image: string;
   idAtelierApi: string;
   actif: boolean;
@@ -17,15 +17,18 @@ export default class RedisManager {
   // Key: Value
 
   // Inc a key start on 0 is nb is undefined
-  public incValueOfKey(key: string, callback?: Function): boolean {
+  public incValueOfKey(
+    key: string,
+    callback?: (err: any, id: any) => void
+  ): boolean {
     return this.db.incr(key, callback);
   }
 
-  public decrValueOfKey(key: string, callback?: Function): boolean {
+  public decrValueOfKey(key: string, callback?: (data: any) => void): boolean {
     return this.db.decr(key, callback);
   }
 
-  public getValueOfKey(key: string, callback?: Function): boolean {
+  public getValueOfKey(key: string, callback?: (reply: any) => void): boolean {
     return this.db.get(key, (err: any, reply: any) => {
       // if error throw error
       this.rejectErr(err);
@@ -39,7 +42,7 @@ export default class RedisManager {
 
   // Tab {`hash`, 'field1', 'keyFromField1', ...}
 
-  public getIdByHash(hash: string, callback?: Function): boolean {
+  public getIdByHash(hash: string, callback?: (data: any) => void): boolean {
     return this.db.hgetall(hash, (err: any, object: any) => {
       this.rejectErr(err);
 
@@ -54,14 +57,16 @@ export default class RedisManager {
     return this.db.hmset(hash, collectionFieldValue);
   }
 
-  public bulkInsertOfhash(idName: string, object: Array<TCat>) {
+  public bulkInsertOfhash(idName: string, object: ICat[]) {
     let isValide = true; // Say if all the data is correctly recorded
-    for (let key in object) {
-      isValide =
-        this.incValueOfKey(`${idName}`, async (err: any, id: any) => {
-          this.rejectErr(err);
-          this.addANewHash(`${idName}:${id}`, object[key]);
-        }) && isValide;
+    for (const key in object) {
+      if (isValide) {
+        isValide =
+          this.incValueOfKey(`${idName}`, async (err: any, id: any) => {
+            this.rejectErr(err);
+            await this.addANewHash(`${idName}:${id}`, object[key]);
+          }) && isValide;
+      }
     }
 
     return isValide;
