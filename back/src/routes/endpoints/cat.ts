@@ -43,12 +43,12 @@ const likeACat = (_: any, res: any) => {
   const exec = catBuilder.incLike(id);
 
   if (exec) {
-    catBuilder.getCatById(id, (data: any) => console.log(data););
+    catBuilder.getCatById(id, (data: any) => process.stdout.write(data));
+    res.status(200).json({ message: "Success incremented like", status: 200 });
+  } else {
     res
       .status(200)
-      .json({ message: "Success incremented like", status: 200 });
-  } else {
-    res.status(200).json({ message: "Error like is not incremented", status: 400 });
+      .json({ message: "Error like is not incremented", status: 400 });
   }
 
   process.stdout.write(`\n${id}`);
