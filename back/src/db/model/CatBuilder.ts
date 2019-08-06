@@ -19,7 +19,7 @@ export default class CatBuilder {
   }
 
   // Push my queue element on redis, return `true` on success.
-  public queuePushOnRedis(idName: string) {
-    return this.RedisManagerDb.bulkInsertOfhash(idName, this.queue);
+  public queuePushOnRedis(arrayOfId: string, idName: string) {
+    return this.RedisManagerDb.bulkInsertOfhash(arrayOfId, idName, this.queue);
   }
 }

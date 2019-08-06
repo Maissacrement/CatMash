@@ -57,19 +57,49 @@ export default class RedisManager {
     return this.db.hmset(hash, collectionFieldValue);
   }
 
-  public bulkInsertOfhash(idName: string, object: ICat[]) {
-    let isValide = true; // Say if all the data is correctly recorded
+  public pushHashOnRedisArray(arrayOfId: string, idOrArrayOfId: any): boolean {
+    return this.db.rpush(
+      [arrayOfId, idOrArrayOfId],
+      (err: any, nbOfKeyAdded: any) => {
+        if (err) {
+          throw new Error(`${err}`);
+        }
+        process.stdout.write(
+          `\nSuccess you have ${nbOfKeyAdded} element in your array`
+        );
+      }
+    );
+  }
+
+  public bulkInsertOfhash(
+    nameOfArrayId: string,
+    idName: string,
+    object: ICat[]
+  ) {
+    const isValide = true; // Say if all the data is correctly recorded
+    const multi = this.db.multi();
+
     for (const key in object) {
       if (isValide) {
-        isValide =
-          this.incValueOfKey(`${idName}`, async (err: any, id: any) => {
-            this.rejectErr(err);
-            await this.addANewHash(`${idName}:${id}`, object[key]);
-          }) && isValide;
+        this.incValueOfKey(`${idName}`, async (err: any, id: any) => {
+          this.rejectErr(err);
+          try {
+            await multi.hmset(`${idName}:${id}`, object[key]);
+            await this.pushHashOnRedisArray(nameOfArrayId, `${idName}:${id}`);
+          } catch (error) {
+            process.stdout.write(`${error}`);
+          }
+        });
       }
     }
 
-    return isValide;
+    return multi.dbsize().exec((err: any, replies: any) => {
+      if (err) {
+        throw new Error(`${err}`);
+      }
+
+      process.stdout.write(`Bulk success ${replies}`);
+    });
   }
 
   public incrValueOfHashField(hash: string, fieldName: string): boolean {

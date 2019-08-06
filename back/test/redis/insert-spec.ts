@@ -11,7 +11,7 @@ interface ICat {
 const object: ICat[] = [
   {
     actif: true,
-    idAtelierApi: "string",
+    idAtelierApi: "string3",
     image: "string",
     like: 0
   },
@@ -26,8 +26,8 @@ const object: ICat[] = [
 describe("Insert data on Redis module testing ...", () => {
   const Redis = new RedisManager();
 
-  it("should be all data", () => {
-    const execBulk = Redis.bulkInsertOfhash("catmash", object);
+  it("should be return true if bulk is a success", () => {
+    const execBulk = Redis.bulkInsertOfhash("cato", "catmash", object);
 
     assert.equal(execBulk, true);
   });
