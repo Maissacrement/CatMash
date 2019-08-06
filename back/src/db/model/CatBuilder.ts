@@ -8,8 +8,10 @@ interface ICat {
 
 export default class CatBuilder {
   private RedisManagerDb: RedisManager;
+  private queue: ICat[];
 
-  constructor(private queue: ICat[]) {
+  constructor() {
+    this.queue = [];
     this.RedisManagerDb = new RedisManager();
   }
 
@@ -18,8 +20,14 @@ export default class CatBuilder {
     this.queue = this.queue.concat(arrayOfCats);
   }
 
+  public emptyQueue() {
+    this.queue = [];
+
+    return true;
+  }
+
   // Push my queue element on redis, return `true` on success.
-  public queuePushOnRedis(arrayOfId: string, idName: string) {
-    return this.RedisManagerDb.bulkInsertOfhash(arrayOfId, idName, this.queue);
+  public queuePushOnRedis(idManager: string, idName: string) {
+    return this.RedisManagerDb.bulkInsertOfhash(idManager, idName, this.queue);
   }
 }

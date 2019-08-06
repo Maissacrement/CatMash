@@ -1,4 +1,5 @@
 import Cat from "../../db/model/Cat";
+import CatBuilder from "../../db/model/CatBuilder";
 
 const addCatOnDb = (_: any, res: any) => {
   const newCat = new Cat({
@@ -17,6 +18,24 @@ const addCatOnDb = (_: any, res: any) => {
   }
 };
 
+const insertCat = (req: any, res: any) => {
+  const cats = req.body; // as ICat
+  const catBuilder = new CatBuilder();
+
+  // Add cat on queue builder
+  catBuilder.queuePush(cats);
+
+  const addOnRedis = catBuilder.queuePushOnRedis("catlist", "cats");
+
+  if (addOnRedis) {
+    res
+      .status(200)
+      .json({ message: "Cat added by bulk method successfully", status: 200 });
+  } else {
+    res.status(200).json({ message: "Error bulk", status: 400 });
+  }
+};
+
 const likeACat = (req: any, res: any) => {
   const id = req.query.id;
 
@@ -24,4 +43,4 @@ const likeACat = (req: any, res: any) => {
   res.end();
 };
 
-export { addCatOnDb, likeACat };
+export { addCatOnDb, insertCat, likeACat };

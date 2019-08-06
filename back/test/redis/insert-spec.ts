@@ -17,7 +17,7 @@ const object: ICat[] = [
   },
   {
     actif: true,
-    idAtelierApi: "string2",
+    idAtelierApi: "string64",
     image: "string2",
     like: 0
   }

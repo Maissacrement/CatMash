@@ -57,9 +57,9 @@ export default class RedisManager {
     return this.db.hmset(hash, collectionFieldValue);
   }
 
-  public pushHashOnRedisArray(arrayOfId: string, idOrArrayOfId: any): boolean {
+  public pushHashOnRedisArray(nameOfList: string, idOrArrayOfId: any): boolean {
     return this.db.rpush(
-      [arrayOfId, idOrArrayOfId],
+      [nameOfList, idOrArrayOfId],
       (err: any, nbOfKeyAdded: any) => {
         if (err) {
           throw new Error(`${err}`);
@@ -76,24 +76,48 @@ export default class RedisManager {
     idName: string,
     object: ICat[]
   ) {
+    let isValide = true; // Say if all the data is correctly recorded
+    for (const key in object) {
+      if (isValide) {
+        isValide =
+          this.incValueOfKey(`${idName}`, async (err: any, id: any) => {
+            this.rejectErr(err);
+
+            // Try create hash and push it in an hash array
+            try {
+              await this.addANewHash(`${idName}:${id}`, object[key]);
+              await this.pushHashOnRedisArray(nameOfArrayId, `${idName}:${id}`);
+            } catch (err) {
+              process.stdout.write(`\n${err}`);
+            }
+          }) && isValide;
+      }
+    }
+
+    return isValide;
+  }
+
+  public bulkInsertOfhashv2(
+    nameOfArrayId: string,
+    idName: string,
+    object: ICat[]
+  ) {
     const isValide = true; // Say if all the data is correctly recorded
     const multi = this.db.multi();
 
     for (const key in object) {
       if (isValide) {
-        this.incValueOfKey(`${idName}`, async (err: any, id: any) => {
+        process.stdout.write(`${JSON.stringify(object[key])}`);
+        this.incValueOfKey(`${idName}Id`, (err: any, id: any) => {
           this.rejectErr(err);
-          try {
-            await multi.hmset(`${idName}:${id}`, object[key]);
-            await this.pushHashOnRedisArray(nameOfArrayId, `${idName}:${id}`);
-          } catch (error) {
-            process.stdout.write(`${error}`);
-          }
+          multi.hmset(`${idName}:${id}`, object[key]);
+          this.pushHashOnRedisArray(nameOfArrayId, `${idName}:${id}`);
+          // process.stdout.write(`Bulk success ${idName}`);
         });
       }
     }
 
-    return multi.dbsize().exec((err: any, replies: any) => {
+    return multi.exec((err: any, replies: any) => {
       if (err) {
         throw new Error(`${err}`);
       }
