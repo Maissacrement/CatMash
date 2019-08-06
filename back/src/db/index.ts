@@ -1,6 +1,6 @@
 // Import
+import Bluebird = require("bluebird");
 import redis = require("redis");
-import * as Bluebird from "bluebird";
 import config from "./config/config";
 
 // Config redis Async flow
@@ -13,12 +13,12 @@ const client = redis.createClient(config);
 
 // Client connected successfully
 const OnSuccess = () => {
-  console.log("redis is ready.");
+  process.stdout.write("redis is ready.");
 };
 
 // Client get error
 const OnError = (err: redis.RedisError) => {
-  console.log(`redis cannot connect, ${err}`);
+  process.stdout.write(`redis cannot connect, ${err}`);
 };
 
 // Manage connection to redis

@@ -9,23 +9,23 @@ const app: express.Application = express();
 
 // Function
 const parseAnyToNumber = (anyTypeOfValue: any): number => {
-  let number: number = 0;
+  let result: number = 0;
   const typeOfArg: string = typeof anyTypeOfValue;
 
   switch (typeOfArg) {
     case "string":
-      number = parseInt(`${anyTypeOfValue}`);
+      result = parseInt(`${anyTypeOfValue}`, 10);
 
       break;
     case "number":
-      number = anyTypeOfValue;
+      result = anyTypeOfValue;
 
       break;
     default:
-      console.log("cannot resolve this variable");
+      process.stdout.write("cannot resolve this variable");
   }
 
-  return !(number === 0) ? number : 8082;
+  return !(result === 0) ? result : 8082;
 };
 
 // Constants

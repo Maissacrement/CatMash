@@ -1,14 +1,15 @@
-import db from "../index";
+import RedisManager from "./RedisManager";
 
 // Interface
-interface CatArgs {
+interface ICatArgs {
   image: string;
   idAtelierApi: string;
 }
 
-interface CatFull extends CatArgs {
+interface ICatFull extends ICatArgs {
   actif: boolean;
   like: number;
+  id: string;
 }
 
 export default class Cat {
@@ -16,86 +17,99 @@ export default class Cat {
   private idAtelierApi: string;
   private actif: boolean;
   private like: number;
+  private id: string;
+  private RedisManagerDb: RedisManager;
 
-  constructor(cat: CatArgs) {
+  constructor(cat: ICatArgs) {
     this.image = cat.image;
     this.idAtelierApi = cat.idAtelierApi;
 
     this.actif = true;
     this.like = 0;
+    this.id = "";
+    this.RedisManagerDb = new RedisManager();
   }
 
-  public get(): CatFull {
+  public setId(id: string): void {
+    this.id = id;
+  }
+
+  public get(): ICatFull {
     return {
-      image: this.image,
       actif: this.actif,
+      id: this.id,
       idAtelierApi: this.idAtelierApi,
+      image: this.image,
       like: this.like
     };
   }
 
-  public getCat(catId: string): boolean {
-    return db.hgetall(catId, (err, object) => {
-      // if error throw error
-      this.rejectErr(err);
-
-      // Success
-      console.log(object);
-    });
+  public currentId(): string {
+    return this.id;
   }
 
-  public getCatId(id: string): boolean {
-    return db.get(id, (err, reply) => {
-      // if error throw error
-      this.rejectErr(err);
+  public getCat(catId: string, callback?: (data: any) => void): boolean {
+    return this.RedisManagerDb.getIdByHash(catId, callback);
+  }
 
-      // Success
-      console.log(reply);
-    });
+  public getCatId(id: string, callback?: (data: any) => void): boolean {
+    return this.RedisManagerDb.getValueOfKey(id, callback);
+  }
+
+  public incLike(catId: number): boolean {
+    return this.RedisManagerDb.incrValueOfHashField(`cat:${catId}`, "like");
   }
 
   public createCat(catId: number): boolean {
     const cat = this.get();
-
-    return db.hmset(`cat:${catId}`, {
-      image: cat.image, // ImageUrl
-      idAtelierApi: cat.idAtelierApi, // Id of cat in latelier.co
+    const catCompleteId = `cat:${catId}`;
+    const myCat = {
       actif: `${cat.actif}`, // Is always available in `latelier.co`
+      idAtelierApi: cat.idAtelierApi, // Id of cat in latelier.co
+      image: cat.image, // ImageUrl
       like: `${cat.like}` // Number of like
-    });
+    };
+
+    return this.RedisManagerDb.addANewHash(catCompleteId, myCat);
   }
 
-  private addNewCat() {
-    return (err: any, catId: number) => {
+  public addNewCat(callback?: (catId: number) => void) {
+    return async (err: any, catId: number) => {
       // if error throw error
       this.rejectErr(err);
+      if (!catId) {
+        throw new Error("Cat id is undefined");
+      }
 
       // Success
-      
       // Recover state after execution of the function
       const exec: boolean = this.createCat(catId);
 
-      // Create cat
-      if (exec) {
-        // Cat is registered
-        process.stdout.write("Cat has been create successfully!");
-      } else {
-        // Cat reject
-        process.stdout.write("Cat not registered");
+      // test is fonction is execute
+      if (!exec) {
+        throw new Error("Methods createCat not return true");
+      }
+
+      // On success execute or not a callback
+      if (callback) {
+        callback(catId);
       }
     };
   }
 
-  public addCatOnRedis(): boolean {
+  public addCatOnRedis(callback?: (id: number) => void): boolean {
     let created: boolean = false;
 
     // Create a new cat on success
-    created = db.incr("catId", this.addNewCat);
+    created = this.RedisManagerDb.incValueOfKey(
+      "catId",
+      this.addNewCat(callback)
+    );
 
     return created;
   }
 
-  private rejectErr(err: any): void {
+  public rejectErr(err: any): void {
     if (err) {
       throw new Error(`${err}`);
     }
