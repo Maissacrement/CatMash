@@ -27,8 +27,13 @@ describe("Insert data on Redis module testing ...", () => {
   const Redis = new RedisManager();
 
   it("should be return true if bulk is a success", () => {
-    const execBulk = Redis.bulkInsertOfhash("cato", "catmash", object);
+    const execBulk = Redis.bulkInsertOfhash("catou973", "catmash", object);
 
     assert.equal(execBulk, true);
+  });
+
+  it("return true if sadd member is created", () => {
+    const addSadd = Redis.addSaddMember("mycatlisttr2", "catmash");
+    assert.equal(typeof addSadd, "boolean");
   });
 });

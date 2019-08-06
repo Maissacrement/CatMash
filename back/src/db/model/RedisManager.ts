@@ -76,7 +76,9 @@ export default class RedisManager {
     idName: string,
     object: ICat[]
   ) {
-    let isValide = true; // Say if all the data is correctly recorded
+    // Say if all the data is correctly recorded
+    let isValide = this.exists(nameOfArrayId);
+
     for (const key in object) {
       if (isValide) {
         isValide =
@@ -86,7 +88,7 @@ export default class RedisManager {
             // Try create hash and push it in an hash array
             try {
               await this.addANewHash(`${idName}:${id}`, object[key]);
-              await this.pushHashOnRedisArray(nameOfArrayId, `${idName}:${id}`);
+              await this.addSaddMember(nameOfArrayId, `${idName}:${id}`);
             } catch (err) {
               process.stdout.write(`\n${err}`);
             }
@@ -103,6 +105,7 @@ export default class RedisManager {
     object: ICat[]
   ) {
     const isValide = true; // Say if all the data is correctly recorded
+    this.addSaddMember(nameOfArrayId, `${idName}:150`);
     const multi = this.db.multi();
 
     for (const key in object) {
@@ -110,8 +113,8 @@ export default class RedisManager {
         process.stdout.write(`${JSON.stringify(object[key])}`);
         this.incValueOfKey(`${idName}Id`, (err: any, id: any) => {
           this.rejectErr(err);
+
           multi.hmset(`${idName}:${id}`, object[key]);
-          this.pushHashOnRedisArray(nameOfArrayId, `${idName}:${id}`);
           // process.stdout.write(`Bulk success ${idName}`);
         });
       }
@@ -135,6 +138,64 @@ export default class RedisManager {
     fieldName: string
   ): boolean {
     return this.db.hincrby(uniqueIdOfElment, fieldName, -1);
+  }
+
+  // SADD Members
+  public registeredOnSadd(tags: string, arg: string): boolean {
+    return this.db.sadd(tags, [arg], (err: any, reply: any) => {
+      this.rejectErr(err);
+      console.log(reply);
+    });
+  }
+
+  public addSaddMember(tags: string, arg: string): boolean {
+    const success = this.exists(tags, (err: any, found: boolean) => {
+      this.rejectErr(err);
+
+      return found
+        ? this.registeredOnSadd(tags, arg)
+        : this.acceptOnlySetType(tags, arg, this.registeredOnSadd);
+    });
+
+    return success;
+  }
+
+  // Test is variable is already assign
+  public exists(
+    variable: string,
+    callback?: (error: any, message: boolean) => void
+  ): boolean {
+    return this.db.exists(variable, callback);
+  }
+
+  public type(variable: string, callback?: (message: string) => void): boolean {
+    return this.db.type(variable, (err: any, message: string): void => {
+      this.rejectErr(err);
+      if (callback) {
+        callback(message);
+      }
+    });
+  }
+
+  // Manage assigned value
+
+  public acceptOnlySetType(
+    tag: string,
+    arg: string,
+    callback?: (tag: string, arg: string) => void
+  ) {
+    return this.type(tag, (typeOfTag: string): void => {
+      if (typeOfTag === "set") {
+        if (callback) {
+          callback(tag, arg);
+          process.stdout.write("Request executed");
+        }
+      } else {
+        process.stdout.write(
+          "SADD not registred because tag is already define, please change tag"
+        );
+      }
+    });
   }
 
   // Manage Error

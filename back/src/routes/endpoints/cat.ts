@@ -25,7 +25,7 @@ const insertCat = (req: any, res: any) => {
   // Add cat on queue builder
   catBuilder.queuePush(cats);
 
-  const addOnRedis = catBuilder.queuePushOnRedis("catlist", "cats");
+  const addOnRedis = catBuilder.queuePushOnRedis("cato973", "cats");
 
   if (addOnRedis) {
     res
