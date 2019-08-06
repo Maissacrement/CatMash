@@ -36,23 +36,48 @@ const insertCat = (req: any, res: any) => {
   }
 };
 
+type Vote = "like" | "dislike";
+
+const vote = (builder: CatBuilder, choice: Vote, id: string) => {
+  const exec = {
+    builder: false,
+    message: ""
+  };
+  switch(choice){
+    case "like":
+      exec.builder = builder.incLike(id);
+      exec.message = "Success incremented like"
+      break;
+    case "dislike":
+      exec.builder = builder.decrLike(id);
+      exec.message = "Success decremented like"
+      break;
+    default:
+      process.stdout.write(
+        "This message should be never read, `vote function`"
+      );
+  }
+
+  return exec;
+}
+
 const likeACat = (_: any, res: any) => {
   const id = "catmash:182"; // req.query.id;
+  const choice = "dislike";
 
   const catBuilder = new CatBuilder();
-  const exec = catBuilder.incLike(id);
+  const exec = vote(catBuilder, choice, id);
 
-  if (exec) {
-    catBuilder.getCatById(id, (data: any) => process.stdout.write(data));
-    res.status(200).json({ message: "Success incremented like", status: 200 });
+  if (exec.builder) {
+    catBuilder.getCatById(id, (data: any) => {
+      process.stdout.write("\n" + JSON.stringify(data, null, 2))
+    });
+    res.status(200).json({ message: exec.message, status: 200 });
   } else {
     res
       .status(200)
       .json({ message: "Error like is not incremented", status: 400 });
   }
-
-  process.stdout.write(`\n${id}`);
-  res.end();
 };
 
 export { addCatOnDb, insertCat, likeACat };

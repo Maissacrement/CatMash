@@ -40,8 +40,12 @@ export default class CatBuilder {
   public getCatListLength(id: string, callback?: (data: any) => void): boolean {
     return this.RedisManagerDb.getValueOfKey(id, callback);
   }
-
+  
   public incLike(cat: string): boolean {
     return this.RedisManagerDb.incrValueOfHashField(`${cat}`, "like");
+  }
+
+  public decrLike(cat: string): boolean {
+    return this.RedisManagerDb.decrValueOfHashField(`${cat}`, "like");
   }
 }
