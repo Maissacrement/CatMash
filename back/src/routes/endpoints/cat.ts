@@ -43,7 +43,7 @@ const vote = (builder: CatBuilder, choice: Vote, id: string) => {
     builder: false,
     message: ""
   };
-  switch(choice){
+  switch(choice) {
     case "like":
       exec.builder = builder.incLike(id);
       exec.message = "Success incremented like"
@@ -59,7 +59,7 @@ const vote = (builder: CatBuilder, choice: Vote, id: string) => {
   }
 
   return exec;
-}
+};
 
 const likeACat = (_: any, res: any) => {
   const id = "catmash:182"; // req.query.id;
@@ -80,4 +80,18 @@ const likeACat = (_: any, res: any) => {
   }
 };
 
-export { addCatOnDb, insertCat, likeACat };
+const getCats = (_: any, res: any) => {
+  const id = "catou973"; // req.query.id;
+
+  const catBuilder = new CatBuilder();
+  catBuilder.getListOfCat(id, (data: any) => {
+    if (data) {
+      res.status(200).json({ "data": data, "status": 200 });
+    } else {
+      res.status(200).json({ message: "User is not create", status: 400 });
+    }
+  });
+
+};
+
+export { addCatOnDb, insertCat, likeACat, getCats };

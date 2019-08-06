@@ -4,7 +4,7 @@ const router: any = express.Router();
 
 // Import Pages
 import BadRequest from "./endpoints/badRequest";
-import { addCatOnDb, insertCat, likeACat } from "./endpoints/cat";
+import { addCatOnDb, getCats, insertCat, likeACat } from "./endpoints/cat";
 
 // Router
 
@@ -12,6 +12,7 @@ import { addCatOnDb, insertCat, likeACat } from "./endpoints/cat";
 router
   .get("/newCat", addCatOnDb)
   .get("/like", likeACat)
+  .get("/cats", getCats)
   .get("/*", BadRequest);
 
 // POST

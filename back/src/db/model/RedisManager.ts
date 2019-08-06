@@ -59,6 +59,8 @@ export default class RedisManager {
     return this.db.hmset(hash, collectionFieldValue);
   }
 
+  // RPUSH array
+
   public pushHashOnRedisArray(nameOfList: string, idOrArrayOfId: any): boolean {
     return this.db.rpush(
       [nameOfList, idOrArrayOfId],
@@ -92,6 +94,16 @@ export default class RedisManager {
     return this.db.sadd(tags, [arg], (err: any, reply: any) => {
       this.rejectErr(err);
       process.stdout.write(reply);
+    });
+  }
+
+  public getSmembers(tags: string, callback?: (tag: string) => void): boolean {
+    return this.db.smembers(tags, 
+      (err: any, reply: any) => {
+        this.rejectErr(err);
+        if (callback) {
+          callback(reply);
+        }
     });
   }
 
