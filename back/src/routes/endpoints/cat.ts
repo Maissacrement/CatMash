@@ -1,6 +1,8 @@
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
 
+const catBuilder = new CatBuilder();
+
 const addCatOnDb = (_: any, res: any) => {
   const newCat = new Cat({
     idAtelierApi: "26",
@@ -113,8 +115,6 @@ const likeACat = (req: any, res: any) => {
     id: req.query.id || "catmash:182",
     choice: req.query.choice
   };
-
-  const catBuilder = new CatBuilder();
 
   // Search if cat exist
 
