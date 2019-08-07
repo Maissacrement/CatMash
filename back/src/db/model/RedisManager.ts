@@ -118,7 +118,9 @@ export default class RedisManager {
 
   /************ Work on a generique Version ************/
 
-  public tryRunTypeCallback(...args: [string, string, (arg: boolean) => void]): boolean {
+  public tryRunTypeCallback(
+    ...args: [string, string, (arg: boolean) => void]
+  ): boolean {
     const [type, id, cb] = args;
 
     const success = this.exists(id, (found: boolean) => {
@@ -129,7 +131,11 @@ export default class RedisManager {
     return success;
   }
 
-  public acceptSetType(type: string, tag: string, callback?: (arg: boolean) => void) {
+  public acceptSetType(
+    type: string,
+    tag: string,
+    callback?: (arg: boolean) => void
+  ) {
     return this.type(tag, (typeOfTag: string): void => {
       if (typeOfTag !== type) {
         if (callback) {

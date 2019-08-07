@@ -36,6 +36,9 @@ const insertCat = (req: any, res: any) => {
   }
 };
 
+/********************* \/GET LIKE ENDPOINT **********************/
+
+/*
 type Vote = "like" | "dislike";
 
 const vote = (builder: CatBuilder, choice: Vote, id: string) => {
@@ -60,6 +63,7 @@ const vote = (builder: CatBuilder, choice: Vote, id: string) => {
 
   return exec;
 };
+*/
 
 /*
 process.stdout.write("is valide: " + Boolean(exist) + "\n");
@@ -87,23 +91,46 @@ process.stdout.write("is valide: " + Boolean(exist) + "\n");
   }
 */
 
-const makeAlike = (exist: boolean): void => {
-  console.log("ex: ", exist);
-}
+const catIsDefined = (opts: any) => {
+  console.log("yes", opts);
+};
+
+const catIsUndefined = (opts: any) => {
+  console.log("no", opts);
+};
+
+const searchCat = (exist: boolean, opts: any) => {
+  if (exist) {
+    catIsDefined(opts);
+  } else {
+    catIsUndefined(opts);
+  }
+};
 
 const likeACat = (req: any, res: any) => {
-  const id = "catmash:182";
-  const choice = req.query.choice;
+  // Define constante
+  const opts = {
+    id: req.query.id || "catmash:182",
+    choice: req.query.choice
+  };
 
   const catBuilder = new CatBuilder();
 
   // Search if cat exist
 
-  catBuilder.isSaddEditableVariable("set",`${id}`, makeAlike);
+  catBuilder.isSaddEditableVariable(
+    "set",
+    `${opts.id}`,
+    (exist: boolean): void => {
+      searchCat(exist, opts);
+    }
+  );
 
   // End connection
   res.end();
 };
+
+/********************* END LIKE ENDPOINT **********************/
 
 const getCats = (req: any, res: any) => {
   const id = req.query.id;

@@ -65,6 +65,10 @@ export default class CatBuilder {
     newIdToadded: string,
     callback: (exist: boolean) => void
   ): boolean {
-    return this.RedisManagerDb.tryRunTypeCallback(type, `${newIdToadded}`, callback);
+    return this.RedisManagerDb.tryRunTypeCallback(
+      type,
+      `${newIdToadded}`,
+      callback
+    );
   }
 }
