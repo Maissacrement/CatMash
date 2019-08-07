@@ -13,12 +13,12 @@ const client = redis.createClient(config);
 
 // Client connected successfully
 const OnSuccess = () => {
-  process.stdout.write("redis is ready.");
+  process.stdout.write("redis is ready.\n");
 };
 
 // Client get error
 const OnError = (err: redis.RedisError) => {
-  process.stdout.write(`redis cannot connect, ${err}`);
+  process.stdout.write(`redis cannot connect, ${err}\n`);
 };
 
 // Manage connection to redis

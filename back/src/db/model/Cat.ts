@@ -49,7 +49,7 @@ export default class Cat {
   }
 
   public getCat(catId: string, callback?: (data: any) => void): boolean {
-    return this.RedisManagerDb.getIdByHash(catId, callback);
+    return this.RedisManagerDb.getHashValue(catId, callback);
   }
 
   public getCatId(id: string, callback?: (data: any) => void): boolean {

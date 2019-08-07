@@ -4,11 +4,18 @@ const router: any = express.Router();
 
 // Import Pages
 import BadRequest from "./endpoints/badRequest";
-import { addCatOnDb, likeACat } from "./endpoints/cat";
+import { addCatOnDb, getCats, insertCat, likeACat } from "./endpoints/cat";
 
 // Router
-router.get("/newCat", addCatOnDb);
-router.get("/like", likeACat);
-router.get("/*", BadRequest);
+
+// GET
+router
+  .get("/newCat", addCatOnDb)
+  .get("/like", likeACat)
+  .get("/cats", getCats)
+  .get("/*", BadRequest);
+
+// POST
+router.post("/insert", insertCat).post("/*", BadRequest);
 
 export default router;

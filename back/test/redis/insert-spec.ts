@@ -11,13 +11,13 @@ interface ICat {
 const object: ICat[] = [
   {
     actif: true,
-    idAtelierApi: "string",
+    idAtelierApi: "string3",
     image: "string",
     like: 0
   },
   {
     actif: true,
-    idAtelierApi: "string2",
+    idAtelierApi: "string64",
     image: "string2",
     like: 0
   }
@@ -26,9 +26,25 @@ const object: ICat[] = [
 describe("Insert data on Redis module testing ...", () => {
   const Redis = new RedisManager();
 
-  it("should be all data", () => {
-    const execBulk = Redis.bulkInsertOfhash("catmash", object);
+  it("should be return true if bulk is a success", () => {
+    const execBulk = Redis.bulkInsertOfhash("catou973", "catmash", object);
 
     assert.equal(execBulk, true);
+  });
+
+  it("return true if sadd member is created", () => {
+    const addSadd = Redis.addSaddMember("mycatlisttr2", "catmash");
+    assert.equal(typeof addSadd, "boolean");
+  });
+
+  it("set undefined variable and reassign variable with 'set' type", () => {
+    const test = () => true;
+    const typeFunction = Redis.tryRunTypeCallback(
+      "mycatlisttr2",
+      "catmash",
+      test
+    );
+
+    assert.equal(typeof typeFunction, "boolean");
   });
 });
