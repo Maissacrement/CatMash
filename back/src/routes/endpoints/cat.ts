@@ -1,5 +1,6 @@
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
+import { create } from "domain";
 
 const addCatOnDb = (_: any, res: any) => {
   const newCat = new Cat({
@@ -14,7 +15,7 @@ const addCatOnDb = (_: any, res: any) => {
   if (isCreate) {
     res.status(200).json({ message: "User create successfully", status: 200 });
   } else {
-    res.status(200).json({ message: "User is not create", status: 400 });
+    res.status(400).json({ message: "User is not create", status: 400 });
   }
 };
 
@@ -32,7 +33,7 @@ const insertCat = (req: any, res: any) => {
       .status(200)
       .json({ message: "Cat added by bulk method successfully", status: 200 });
   } else {
-    res.status(200).json({ message: "Error bulk", status: 400 });
+    res.status(400).json({ message: "Error bulk", status: 400 });
   }
 };
 
@@ -43,14 +44,14 @@ const vote = (builder: CatBuilder, choice: Vote, id: string) => {
     builder: false,
     message: ""
   };
-  switch(choice) {
+  switch (choice) {
     case "like":
       exec.builder = builder.incLike(id);
-      exec.message = "Success incremented like"
+      exec.message = "Success incremented like";
       break;
     case "dislike":
       exec.builder = builder.decrLike(id);
-      exec.message = "Success decremented like"
+      exec.message = "Success decremented like";
       break;
     default:
       process.stdout.write(
@@ -61,37 +62,61 @@ const vote = (builder: CatBuilder, choice: Vote, id: string) => {
   return exec;
 };
 
-const likeACat = (_: any, res: any) => {
-  const id = "catmash:182"; // req.query.id;
-  const choice = "dislike";
+/*
+process.stdout.write("is valide: " + Boolean(exist) + "\n");
 
-  const catBuilder = new CatBuilder();
-  const exec = vote(catBuilder, choice, id);
+  if (exist) {
+    const exec = vote(catBuilder, choice, id);
+    if (exec.builder) {
+      catBuilder.getCatById(id, (data: any) => {
+        console.log("dts",data)
 
-  if (exec.builder) {
-    catBuilder.getCatById(id, (data: any) => {
-      process.stdout.write("\n" + JSON.stringify(data, null, 2))
-    });
-    res.status(200).json({ message: exec.message, status: 200 });
+        process.stdout.write(`my data: ${JSON.stringify(data)}\n`);
+        res
+          .status(200)
+          .json({ results: data, message: exec.message, status: 200 });
+      });
+    } else {
+      res
+        .status(400)
+        .json({ message: "Error like is not incremented", status: 400 });
+    }
   } else {
     res
-      .status(200)
-      .json({ message: "Error like is not incremented", status: 400 });
+      .status(400)
+      .json({ message: "Cat is undefined", status: 400 });
   }
-};
+*/
 
-const getCats = (_: any, res: any) => {
-  const id = "catou973"; // req.query.id;
+const makeAlike = (exist: boolean, ...args: any): any => {
+  console.log("my args: ", args);
+  console.log("ex: ", exist)
+}
+
+const likeACat = (req: any, res: any) => {
+  const id = req.query.id || "catmash:182";
+  const choice = req.query.choice;
 
   const catBuilder = new CatBuilder();
-  catBuilder.getListOfCat(id, (data: any) => {
-    if (data) {
-      res.status(200).json({ "data": data, "status": 200 });
+
+  // Search if cat exist
+
+  catBuilder.isSaddEditableVariable("string",`${id}`, makeAlike);
+};
+
+const getCats = (req: any, res: any) => {
+  const id = req.query.id;
+
+  const catBuilder = new CatBuilder();
+  catBuilder.getListOfCat(id, (data: []) => {
+    if (data.length > 0) {
+      res.status(200).json({ datas: data, status: 200 });
     } else {
-      res.status(200).json({ message: "User is not create", status: 400 });
+      res
+        .status(400)
+        .json({ message: "Sorry, no data found for this id", status: 400 });
     }
   });
-
 };
 
 export { addCatOnDb, insertCat, likeACat, getCats };

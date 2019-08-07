@@ -36,4 +36,15 @@ describe("Insert data on Redis module testing ...", () => {
     const addSadd = Redis.addSaddMember("mycatlisttr2", "catmash");
     assert.equal(typeof addSadd, "boolean");
   });
+
+  it("set undefined variable and reassign variable with 'set' type", () => {
+    const test = () => true;
+    const typeFunction = Redis.tryRunTypeCallback(
+      "mycatlisttr2",
+      "catmash",
+      test
+    );
+
+    assert.equal(typeof typeFunction, "boolean");
+  });
 });
