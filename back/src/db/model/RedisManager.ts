@@ -93,24 +93,21 @@ export default class RedisManager {
   public registeredOnSadd(tags: string, arg: string): boolean {
     return this.db.sadd(tags, [arg], (err: any, reply: any) => {
       this.rejectErr(err);
-      process.stdout.write(reply);
+      process.stdout.write(JSON.stringify(reply, null, 2));
     });
   }
 
   public getSmembers(tags: string, callback?: (tag: string) => void): boolean {
-    return this.db.smembers(tags, 
-      (err: any, reply: any) => {
-        this.rejectErr(err);
-        if (callback) {
-          callback(reply);
-        }
+    return this.db.smembers(tags, (err: any, reply: any) => {
+      this.rejectErr(err);
+      if (callback) {
+        callback(reply);
+      }
     });
   }
 
   public addSaddMember(tags: string, arg: string): boolean {
-    const success = this.exists(tags, (err: any, found: boolean) => {
-      this.rejectErr(err);
-
+    const success = this.exists(tags, (found: boolean) => {
       return found
         ? this.registeredOnSadd(tags, arg)
         : this.acceptOnlySetType(tags, arg, this.registeredOnSadd);
@@ -119,23 +116,51 @@ export default class RedisManager {
     return success;
   }
 
-  // Manage Key availability
+  /************ Work on a generique Version ************/
 
-  public exists(
-    variable: string,
-    callback?: (error: any, message: boolean) => void
+  public tryRunTypeCallback(
+    ...args: [string, string, (arg: boolean) => void]
   ): boolean {
-    return this.db.exists(variable, callback);
+    const [type, id, cb] = args;
+
+    const success = this.exists(id, (found: boolean) => {
+      console.log("EXIST: ", found);
+      return !found ? cb(found) : this.acceptSetType(type, id, cb);
+    });
+
+    return success;
   }
+
+  public acceptSetType(
+    type: string,
+    tag: string,
+    callback?: (arg: boolean) => void
+  ) {
+    return this.type(tag, (typeOfTag: string): void => {
+      if (typeOfTag === type) {
+        if (callback) {
+          callback(true);
+          process.stdout.write("Request executed");
+        }
+      } else {
+        if (callback) {
+          callback(false);
+        }
+        process.stdout.write(
+          "SADD not registred because tag is already define as a non-assignable type, please change tag\n"
+        );
+      }
+    });
+  }
+
+  /*************** Generique version End ****************/
 
   // Manage Key Type
 
   public type(variable: string, callback?: (message: string) => void): boolean {
     return this.db.type(variable, (err: any, message: string): void => {
       this.rejectErr(err);
-      if (callback) {
-        callback(message);
-      }
+      this.isDefined(message, callback);
     });
   }
 
@@ -154,9 +179,21 @@ export default class RedisManager {
         }
       } else {
         process.stdout.write(
-          "SADD not registred because tag is already define as a non-assignable type, please change tag"
+          "SADD not registred because tag is already define as a non-assignable type, please change tag\n"
         );
       }
+    });
+  }
+
+  // Manage Key availability
+
+  public exists(
+    variable: string,
+    callback?: (message: boolean) => void
+  ): boolean {
+    return this.db.exists(variable, (error: any, message: string) => {
+      this.rejectErr(error);
+      this.isDefined(message, callback);
     });
   }
 
@@ -218,6 +255,12 @@ export default class RedisManager {
 
       process.stdout.write(`Bulk success ${replies}`);
     });
+  }
+
+  private isDefined(object: any, cb?: (object: any) => void) {
+    if (cb) {
+      cb(object);
+    }
   }
 
   // Manage Error

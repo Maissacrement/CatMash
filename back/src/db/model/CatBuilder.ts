@@ -41,15 +41,34 @@ export default class CatBuilder {
     return this.RedisManagerDb.getValueOfKey(id, callback);
   }
 
-  public getListOfCat(tagName: string, callback?: (data: any) => void): boolean {
+  public getListOfCat(
+    tagName: string,
+    callback?: (data: any) => void
+  ): boolean {
     return this.RedisManagerDb.getSmembers(tagName, callback);
   }
-  
+
   public incLike(cat: string): boolean {
     return this.RedisManagerDb.incrValueOfHashField(`${cat}`, "like");
   }
 
   public decrLike(cat: string): boolean {
     return this.RedisManagerDb.decrValueOfHashField(`${cat}`, "like");
+  }
+
+  public exist(redisKey: string, callback?: (data: boolean) => void): boolean {
+    return this.RedisManagerDb.exists(`${redisKey}`, callback);
+  }
+
+  public isEditableVariable(
+    type: string,
+    newIdToadded: string,
+    callback: (exist: boolean) => void
+  ): boolean {
+    return this.RedisManagerDb.tryRunTypeCallback(
+      type,
+      `${newIdToadded}`,
+      callback
+    );
   }
 }
