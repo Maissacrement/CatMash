@@ -63,7 +63,7 @@ export default class CatBuilder {
   public isSaddEditableVariable(
     type: string,
     newIdToadded: string,
-    callback: (exist: any) => boolean
+    callback: (exist: boolean) => void
   ): boolean {
     return this.RedisManagerDb.tryRunTypeCallback(type, `${newIdToadded}`, callback);
   }

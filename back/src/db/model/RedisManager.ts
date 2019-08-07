@@ -118,7 +118,7 @@ export default class RedisManager {
 
   /************ Work on a generique Version ************/
 
-  public tryRunTypeCallback(...args: [string, string, (arg: any) => boolean]): boolean {
+  public tryRunTypeCallback(...args: [string, string, (arg: boolean) => void]): boolean {
     const [type, id, cb] = args;
 
     const success = this.exists(id, (found: boolean) => {
@@ -129,16 +129,16 @@ export default class RedisManager {
     return success;
   }
 
-  public acceptSetType(type: string, tag: string, callback?: (tag: string | null) => void) {
+  public acceptSetType(type: string, tag: string, callback?: (arg: boolean) => void) {
     return this.type(tag, (typeOfTag: string): void => {
-      if (typeOfTag === type) {
+      if (typeOfTag !== type) {
         if (callback) {
-          callback(tag);
+          callback(true);
           process.stdout.write("Request executed");
         }
       } else {
         if (callback) {
-          callback(null);
+          callback(false);
         }
         process.stdout.write(
           "SADD not registred because tag is already define as a non-assignable type, please change tag\n"

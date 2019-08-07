@@ -1,6 +1,5 @@
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
-import { create } from "domain";
 
 const addCatOnDb = (_: any, res: any) => {
   const newCat = new Cat({
@@ -88,20 +87,22 @@ process.stdout.write("is valide: " + Boolean(exist) + "\n");
   }
 */
 
-const makeAlike = (exist: boolean, ...args: any): any => {
-  console.log("my args: ", args);
-  console.log("ex: ", exist)
+const makeAlike = (exist: boolean): void => {
+  console.log("ex: ", exist);
 }
 
 const likeACat = (req: any, res: any) => {
-  const id = req.query.id || "catmash:182";
+  const id = "catmash:182";
   const choice = req.query.choice;
 
   const catBuilder = new CatBuilder();
 
   // Search if cat exist
 
-  catBuilder.isSaddEditableVariable("string",`${id}`, makeAlike);
+  catBuilder.isSaddEditableVariable("set",`${id}`, makeAlike);
+
+  // End connection
+  res.end();
 };
 
 const getCats = (req: any, res: any) => {
