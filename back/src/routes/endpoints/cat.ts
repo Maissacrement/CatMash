@@ -65,31 +65,6 @@ const vote = (choice: Vote, id: string) => {
   return exec;
 };
 
-/*
-process.stdout.write("is valide: " + Boolean(exist) + "\n");
-
-  if (exist) {
-    const exec = vote(catBuilder, choice, id);
-    if (exec.builder) {
-      catBuilder.getCatById(id, (data: any) => {
-        console.log("dts",data)
-
-        process.stdout.write(`my data: ${JSON.stringify(data)}\n`);
-        res
-          .status(200)
-          .json({ results: data, message: exec.message, status: 200 });
-      });
-    } else {
-      res
-        .status(400)
-        .json({ message: "Error like is not incremented", status: 400 });
-    }
-  } else {
-    res
-      .status(400)
-      .json({ message: "Cat is undefined", status: 400 });
-  }
-*/
 const manageReject = (opts: any, messageError: string) => {
   const { res } = opts;
 
