@@ -16,7 +16,7 @@ const addCatOnDb = (_: any, res: any) => {
   if (isCreate) {
     res.status(200).json({ message: "User create successfully", status: 200 });
   } else {
-    res.status(400).json({ message: "User is not create", status: 400 });
+    res.status(403).json({ message: "User is not create", status: 403 });
   }
 };
 
@@ -34,7 +34,7 @@ const insertCat = (req: any, res: any) => {
       .status(200)
       .json({ message: "Cat added by bulk method successfully", status: 200 });
   } else {
-    res.status(400).json({ message: "Error bulk", status: 400 });
+    res.status(403).json({ message: "Error bulk", status: 403 });
   }
 };
 
@@ -68,21 +68,17 @@ const vote = (choice: Vote, id: string) => {
 const manageReject = (opts: any, messageError: string) => {
   const { res } = opts;
 
-  res
-    .status(403)
-    .json({ message: messageError, status: 403 });
-}
+  res.status(403).json({ message: messageError, status: 403 });
+};
 
 const catFoundWithSuccess = (data: any, opts: any, exec: any) => {
   const { res } = opts;
   process.stdout.write(`my data: ${JSON.stringify(data)}\n`);
-  res
-    .status(200)
-    .json({ results: data, message: exec.message, status: 200 });
+  res.status(200).json({ results: data, message: exec.message, status: 200 });
 };
 
 const resolveCat = (data: any, opts: any, exec: any) => {
-  if(data) {
+  if (data) {
     catFoundWithSuccess(data, opts, exec);
   } else {
     manageReject(opts, "Cat is not set");
@@ -93,7 +89,7 @@ const catIsDefined = (opts: any) => {
   const { id, choice } = opts;
   const exec = vote(choice, id);
 
-  if(exec.builder) {
+  if (exec.builder) {
     catBuilder.getCatById(id, (data: any) => {
       resolveCat(data, opts, exec);
     });
@@ -103,7 +99,7 @@ const catIsDefined = (opts: any) => {
 };
 
 const catIsUndefined = (opts: any) => {
-  manageReject(opts, "Cat is undefined")
+  manageReject(opts, "Cat is undefined");
 };
 
 const searchCat = (exist: boolean, opts: any) => {
@@ -143,8 +139,8 @@ const getCats = (req: any, res: any) => {
       res.status(200).json({ datas: data, status: 200 });
     } else {
       res
-        .status(400)
-        .json({ message: "Sorry, no data found for this id", status: 400 });
+        .status(403)
+        .json({ message: "Sorry, no data found for this id", status: 403 });
     }
   });
 };
