@@ -137,7 +137,7 @@ export default class RedisManager {
     callback?: (arg: boolean) => void
   ) {
     return this.type(tag, (typeOfTag: string): void => {
-      if (typeOfTag !== type) {
+      if (typeOfTag === type) {
         if (callback) {
           callback(true);
           process.stdout.write("Request executed");

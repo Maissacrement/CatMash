@@ -1,7 +1,7 @@
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
 
-const catBuilder = new CatBuilder();
+const catBuilder: CatBuilder = new CatBuilder();
 
 const addCatOnDb = (_: any, res: any) => {
   const newCat = new Cat({
@@ -40,21 +40,20 @@ const insertCat = (req: any, res: any) => {
 
 /********************* \/GET LIKE ENDPOINT **********************/
 
-/*
 type Vote = "like" | "dislike";
 
-const vote = (builder: CatBuilder, choice: Vote, id: string) => {
+const vote = (choice: Vote, id: string) => {
   const exec = {
     builder: false,
     message: ""
   };
   switch (choice) {
     case "like":
-      exec.builder = builder.incLike(id);
+      exec.builder = catBuilder.incLike(id);
       exec.message = "Success incremented like";
       break;
     case "dislike":
-      exec.builder = builder.decrLike(id);
+      exec.builder = catBuilder.decrLike(id);
       exec.message = "Success decremented like";
       break;
     default:
@@ -65,7 +64,6 @@ const vote = (builder: CatBuilder, choice: Vote, id: string) => {
 
   return exec;
 };
-*/
 
 /*
 process.stdout.write("is valide: " + Boolean(exist) + "\n");
@@ -92,13 +90,45 @@ process.stdout.write("is valide: " + Boolean(exist) + "\n");
       .json({ message: "Cat is undefined", status: 400 });
   }
 */
+const manageReject = (opts: any, messageError: string) => {
+  const { res } = opts;
+
+  res
+    .status(403)
+    .json({ message: messageError, status: 403 });
+}
+
+const catFoundWithSuccess = (data: any, opts: any, exec: any) => {
+  const { res } = opts;
+  process.stdout.write(`my data: ${JSON.stringify(data)}\n`);
+  res
+    .status(200)
+    .json({ results: data, message: exec.message, status: 200 });
+};
+
+const resolveCat = (data: any, opts: any, exec: any) => {
+  if(data) {
+    catFoundWithSuccess(data, opts, exec);
+  } else {
+    manageReject(opts, "Cat is not set");
+  }
+};
 
 const catIsDefined = (opts: any) => {
-  console.log("yes", opts);
+  const { id, choice } = opts;
+  const exec = vote(choice, id);
+
+  if(exec.builder) {
+    catBuilder.getCatById(id, (data: any) => {
+      resolveCat(data, opts, exec);
+    });
+  } else {
+    manageReject(opts, "Error is not a cat, like not changed value");
+  }
 };
 
 const catIsUndefined = (opts: any) => {
-  console.log("no", opts);
+  manageReject(opts, "Cat is undefined")
 };
 
 const searchCat = (exist: boolean, opts: any) => {
@@ -113,21 +143,18 @@ const likeACat = (req: any, res: any) => {
   // Define constante
   const opts = {
     id: req.query.id || "catmash:182",
-    choice: req.query.choice
+    choice: req.query.choice,
+    res: res
   };
 
   // Search if cat exist
-
-  catBuilder.isSaddEditableVariable(
-    "set",
+  catBuilder.isEditableVariable(
+    "hash",
     `${opts.id}`,
     (exist: boolean): void => {
       searchCat(exist, opts);
     }
   );
-
-  // End connection
-  res.end();
 };
 
 /********************* END LIKE ENDPOINT **********************/

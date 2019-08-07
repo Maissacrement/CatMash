@@ -60,7 +60,7 @@ export default class CatBuilder {
     return this.RedisManagerDb.exists(`${redisKey}`, callback);
   }
 
-  public isSaddEditableVariable(
+  public isEditableVariable(
     type: string,
     newIdToadded: string,
     callback: (exist: boolean) => void
