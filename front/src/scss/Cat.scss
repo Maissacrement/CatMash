@@ -1,0 +1,24 @@
+$grew-up-circle: 2;
+$radius: calc(50px * #{$grew-up-circle});
+$circle-size: calc(90px * #{$grew-up-circle});
+$box-center-circle: calc((100% - #{$circle-size}) / 2);
+
+.cat-box{
+    width: 100%;
+    height: 100%;
+    .cadre {
+      position: relative;
+      -webkit-border-radius: $radius;
+      -moz-border-radius: $radius;
+      border-radius: $radius;
+      width: $circle-size;
+      border-width: 12px;
+      border-style: solid;
+      height: $circle-size;
+      left: $box-center-circle;
+      top: $box-center-circle;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+    }
+  }

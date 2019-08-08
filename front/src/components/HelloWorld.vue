@@ -1,8 +1,15 @@
 <template>
   <div class="main">
-    <div @click="increment()" class="left"></div>
-    <div @click="decrement()" class="right"></div>
-    <div class="bottom">
+    <div @click="increment()" class="left">
+      <Cat :borderColor="true" />
+    </div>
+    <div @click="decrement()" class="right">
+      <Cat />
+    </div>
+    <div class="top-out-flow">
+      <img src="@/assets/image823.png" class="logo" />
+    </div>
+    <div class="bottom-out-flow">
       <Print text="Voir les plus beaux chats" />
       <Print 
         :text="nbVotes" 
@@ -15,10 +22,12 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Print from '@/components/Print.vue';
+import Cat from '@/components/Cat.vue';
 
 @Component({
   components: {
     Print,
+    Cat,
   },
 })
 export default class HelloWorld extends Vue {
@@ -61,7 +70,7 @@ export default class HelloWorld extends Vue {
   .right {
     background-color: #f5f5f5;
   }
-  .bottom {
+  .bottom-out-flow {
     padding: 2px;
     position: absolute;
     bottom: 6px;
@@ -75,6 +84,20 @@ export default class HelloWorld extends Vue {
     border-style: solid;
     @media (min-width: 300px) {
       left: calc((100% - 300px) / 2);
+    }
+  }
+  .top-out-flow {
+    position: absolute;
+    max-width: 200px;
+    width: calc(100% - 12px);
+    @media (min-width: 200px) {
+      left: calc((100% - 200px) / 2);
+    }
+    @media (max-height: 400px) {
+      width: 70px !important;
+      left: calc((100% - 70px) / 2) !important;
+      /* width: calc(70% - 12px) !important;
+      left: calc((70% - 200px) / 2) !important; */
     }
   }
 }
