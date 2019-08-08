@@ -1,17 +1,41 @@
 <template>
   <div class="main">
-    <div class="left"></div>
-    <div class="right"></div>
-    <div class="bottom"></div>
+    <div @click="increment()" class="left"></div>
+    <div @click="decrement()" class="right"></div>
+    <div class="bottom">
+      <Print text="Voir les plus beaux chats" />
+      <Print 
+        :text="nbVotes" 
+        appendText="votes" 
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import Print from '@/components/Print.vue';
 
-@Component
+@Component({
+  components: {
+    Print,
+  },
+})
 export default class HelloWorld extends Vue {
-  // @Prop() private msg!: string;
+  public nbVotes: number;
+
+  constructor() {
+    super();
+    this.nbVotes = 0;
+  }
+
+  public increment(): void {
+      this.nbVotes += 1;
+  }
+
+  public decrement(): void {
+      this.nbVotes -= 1;
+  }
 }
 </script>
 
@@ -38,6 +62,7 @@ export default class HelloWorld extends Vue {
     background-color: #f5f5f5;
   }
   .bottom {
+    padding: 2px;
     position: absolute;
     bottom: 6px;
     background-color: #f5f5f5;
