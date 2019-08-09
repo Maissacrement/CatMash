@@ -1,33 +1,17 @@
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
+import { ICat, IJsonCatFormat } from "../../types/index";
 
 const catBuilder: CatBuilder = new CatBuilder();
-
-const addCatOnDb = (_: any, res: any) => {
-  const newCat = new Cat({
-    idAtelierApi: "26",
-    image: "http://myimg.png"
-  });
-
-  const isCreate = newCat.addCatOnRedis((id: number) =>
-    process.stdout.write(`${id}`)
-  );
-
-  if (isCreate) {
-    res.status(200).json({ message: "User create successfully", status: 200 });
-  } else {
-    res.status(403).json({ message: "User is not create", status: 403 });
-  }
-};
+const myCatModel: Cat = new Cat();
 
 const insertCat = (req: any, res: any) => {
-  const cats = req.body; // as ICat
-  const catBuilder = new CatBuilder();
+  const cats: ICat[] = req.body;
 
   // Add cat on queue builder
   catBuilder.queuePush(cats);
 
-  const addOnRedis = catBuilder.queuePushOnRedis("cato973", "cats");
+  const addOnRedis = catBuilder.queuePushOnRedis(myCatModel.getCatModel());
 
   if (addOnRedis) {
     res
@@ -110,12 +94,12 @@ const searchCat = (exist: boolean, opts: any) => {
   }
 };
 
-const likeACat = (req: any, res: any) => {
+const likeACat = (req: any, result: any) => {
   // Define constante
   const opts = {
-    id: req.query.id || "catmash:182",
     choice: req.query.choice,
-    res: res
+    id: req.query.id,
+    res: result
   };
 
   // Search if cat exist
@@ -130,19 +114,29 @@ const likeACat = (req: any, res: any) => {
 
 /********************* END LIKE ENDPOINT **********************/
 
-const getCats = (req: any, res: any) => {
-  const id = req.query.id;
+const format = (nameOfCat: string, response: any) => {
+  return {
+    data: response,
+    name: nameOfCat
+  };
+};
 
-  const catBuilder = new CatBuilder();
-  catBuilder.getListOfCat(id, (data: []) => {
-    if (data.length > 0) {
-      res.status(200).json({ datas: data, status: 200 });
-    } else {
-      res
-        .status(403)
-        .json({ message: "Sorry, no data found for this id", status: 403 });
-    }
+const getCats = (_: any, res: any) => {
+  const myCats: IJsonCatFormat[] = [];
+
+  myCatModel.getCats((cats: string[]) => {
+    cats.forEach((catHash: string, index: number) => {
+      catBuilder.getCatsByHash(catHash, (data: any) => {
+        myCats.push(format(catHash, data));
+        if (index === cats.length - 1) {
+          res.status(200).json({
+            response: myCats,
+            status: 200
+          });
+        }
+      });
+    });
   });
 };
 
-export { addCatOnDb, insertCat, likeACat, getCats };
+export { insertCat, likeACat, getCats };

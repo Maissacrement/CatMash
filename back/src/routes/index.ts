@@ -4,13 +4,12 @@ const router: any = express.Router();
 
 // Import Pages
 import BadRequest from "./endpoints/badRequest";
-import { addCatOnDb, getCats, insertCat, likeACat } from "./endpoints/cat";
+import { getCats, insertCat, likeACat } from "./endpoints/cat";
 
 // Router
 
 // GET
 router
-  .get("/newCat", addCatOnDb)
   .get("/like", likeACat)
   .get("/cats", getCats)
   .get("/*", BadRequest);

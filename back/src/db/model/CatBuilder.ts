@@ -1,10 +1,5 @@
+import { ICat, ICatModel } from "../../types/index";
 import RedisManager from "./RedisManager";
-interface ICat {
-  image: string;
-  idAtelierApi: string;
-  actif: boolean;
-  like: number;
-}
 
 export default class CatBuilder {
   private RedisManagerDb: RedisManager;
@@ -21,14 +16,13 @@ export default class CatBuilder {
   }
 
   public emptyQueue() {
-    this.queue = [];
-
+    this.queue = [] as ICat[];
     return true;
   }
 
   // Push my queue element on redis, return `true` on success.
-  public queuePushOnRedis(idManager: string, idName: string) {
-    return this.RedisManagerDb.bulkInsertOfhash(idManager, idName, this.queue)
+  public queuePushOnRedis(model: ICatModel) {
+    return this.RedisManagerDb.bulkInsertOfhash(model, this.queue)
       ? this.emptyQueue()
       : null;
   }
@@ -48,6 +42,10 @@ export default class CatBuilder {
     return this.RedisManagerDb.getSmembers(tagName, callback);
   }
 
+  public getCatsByHash(hash: string, cb: (data: any) => void) {
+    this.RedisManagerDb.getHashValue(hash, cb);
+  }
+
   public incLike(cat: string): boolean {
     return this.RedisManagerDb.incrValueOfHashField(`${cat}`, "like");
   }
@@ -65,7 +63,7 @@ export default class CatBuilder {
     newIdToadded: string,
     callback: (exist: boolean) => void
   ): boolean {
-    return this.RedisManagerDb.tryRunTypeCallback(
+    return this.RedisManagerDb.workOnDataBaseVariable(
       type,
       `${newIdToadded}`,
       callback

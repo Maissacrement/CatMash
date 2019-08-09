@@ -22,6 +22,7 @@
     "dev:nodebug": "ts-node-dev --respawn --transpileOnly bin/dev"
   },
   "dependencies": {
+    "bluebird": "latest",
     "@types/bluebird": "^3.5.27",
     "@types/cors": "^2.8.5",
     "@types/redis": "^2.8.13",
@@ -45,7 +46,6 @@
     "@types/mocha": "^5.2.5",
     "@types/node": "^12.6.9",
     "@types/supertest": "^2.0.8",
-    "bluebird": "^3.5.5",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "coveralls": "^3.0.2",
