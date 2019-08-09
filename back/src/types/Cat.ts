@@ -1,6 +1,11 @@
+export type Ttype = "set";
+export type TChildType = "hash";
+
 export interface ICatModel {
-  name: string;
+  idManager: string;
   catPrefix: string;
+  type?: Ttype;
+  childType?: TChildType;
 }
 
 export interface ICat {

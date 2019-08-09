@@ -3,14 +3,15 @@ import CatBuilder from "../../db/model/CatBuilder";
 import { ICat } from '../../types/index';
 
 const catBuilder: CatBuilder = new CatBuilder();
+const myModel: Cat = new Cat();
 
 const insertCat = (req: any, res: any) => {
-  const cats = req.body as ICat[];
+  const cats: ICat[] = req.body;
 
   // Add cat on queue builder
   catBuilder.queuePush(cats);
 
-  const addOnRedis = catBuilder.queuePushOnRedis(new Cat());
+  const addOnRedis = catBuilder.queuePushOnRedis(myModel.getCatModel());
 
   if (addOnRedis) {
     res

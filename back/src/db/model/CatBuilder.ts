@@ -1,5 +1,5 @@
+import { ICat, ICatModel } from '../../types/index';
 import RedisManager from "./RedisManager";
-import { ICat } from '../../types/index';
 
 export default class CatBuilder {
   private RedisManagerDb: RedisManager;
@@ -21,9 +21,8 @@ export default class CatBuilder {
   }
 
   // Push my queue element on redis, return `true` on success.
-  public queuePushOnRedis(aCat: any) {
-    const { idManager, idName } = aCat.getCatModel();
-    return this.RedisManagerDb.bulkInsertOfhash(idManager, idName, this.queue)
+  public queuePushOnRedis(model: ICatModel) {
+    return this.RedisManagerDb.bulkInsertOfhash(model, this.queue)
       ? this.emptyQueue()
       : null;
   }
@@ -60,7 +59,7 @@ export default class CatBuilder {
     newIdToadded: string,
     callback: (exist: boolean) => void
   ): boolean {
-    return this.RedisManagerDb.tryRunTypeCallback(
+    return this.RedisManagerDb.workOnDataBaseVariable(
       type,
       `${newIdToadded}`,
       callback

@@ -39,7 +39,7 @@ describe("Insert data on Redis module testing ...", () => {
 
   it("set undefined variable and reassign variable with 'set' type", () => {
     const test = () => true;
-    const typeFunction = Redis.tryRunTypeCallback(
+    const typeFunction = Redis.workOnDataBaseVariable(
       "mycatlisttr2",
       "catmash",
       test
