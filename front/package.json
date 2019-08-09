@@ -33,11 +33,12 @@
     "@vue/cli-plugin-e2e-cypress": "^3.9.0"
   },
   "devDependencies": {
+    "axios": "^0.19.0",
     "chai": "^4.1.2",
     "lint-staged": "^8.1.5",
+    "serve": "^11.1.0",
     "typescript": "^3.4.3",
-    "vue-template-compiler": "^2.6.10",
-    "serve": "^11.1.0"
+    "vue-template-compiler": "^2.6.10"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
