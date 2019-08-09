@@ -1,10 +1,11 @@
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
+import { ICat } from '../../types/index';
 
 const catBuilder: CatBuilder = new CatBuilder();
 
 const insertCat = (req: any, res: any) => {
-  const cats = req.body; // as ICat
+  const cats = req.body as ICat[];
 
   // Add cat on queue builder
   catBuilder.queuePush(cats);

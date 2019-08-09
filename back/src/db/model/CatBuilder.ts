@@ -1,11 +1,5 @@
 import RedisManager from "./RedisManager";
-
-interface ICat {
-  image: string;
-  idAtelierApi: string;
-  actif: boolean;
-  like: number;
-}
+import { ICat } from '../../types/index';
 
 export default class CatBuilder {
   private RedisManagerDb: RedisManager;
