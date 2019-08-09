@@ -1,0 +1,11 @@
+/* Init reponsive base */
+* {
+  /* Remove magin and padding default as navigator */
+  margin: 0;
+  padding: 0;
+}
+body {
+  /* Apply full screen */
+  width: 100%;
+  height: 100vh;
+}
