@@ -96,10 +96,13 @@ export default class Home extends Vue {
       left: calc((100% - 200px) / 2);
     }
     @media (max-height: 400px) {
-      width: 70px !important;
-      left: calc((100% - 70px) / 2) !important;
+      width: 70px;
+      left: calc((100% - 70px) / 2);
       /* width: calc(70% - 12px) !important;
       left: calc((70% - 200px) / 2) !important; */
+    }
+    .logo {
+      width: 100%;
     }
   }
 }
