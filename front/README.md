@@ -41,3 +41,8 @@ yarn run test:unit
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## Test Security
+
+### Package Vulnerability
+[![Known Vulnerabilities](https://snyk.io//test/github/Maissacrement/CatMash/badge.svg?targetFile=front/package.json)](https://snyk.io//test/github/Maissacrement/CatMash?targetFile=front/package.json)
