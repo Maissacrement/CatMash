@@ -1,9 +1,9 @@
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
-import { ICat } from '../../types/index';
+import { ICat, IJsonCatFormat } from "../../types/index";
 
 const catBuilder: CatBuilder = new CatBuilder();
-const myModel: Cat = new Cat();
+const myCatModel: Cat = new Cat();
 
 const insertCat = (req: any, res: any) => {
   const cats: ICat[] = req.body;
@@ -11,7 +11,7 @@ const insertCat = (req: any, res: any) => {
   // Add cat on queue builder
   catBuilder.queuePush(cats);
 
-  const addOnRedis = catBuilder.queuePushOnRedis(myModel.getCatModel());
+  const addOnRedis = catBuilder.queuePushOnRedis(myCatModel.getCatModel());
 
   if (addOnRedis) {
     res
@@ -114,17 +114,28 @@ const likeACat = (req: any, result: any) => {
 
 /********************* END LIKE ENDPOINT **********************/
 
-const getCats = (req: any, res: any) => {
-  const id = req.query.id;
+const format = (nameOfCat: string, response: any) => {
+  return {
+    data: response,
+    name: nameOfCat
+  };
+};
 
-  catBuilder.getListOfCat(id, (data: []) => {
-    if (data.length > 0) {
-      res.status(200).json({ datas: data, status: 200 });
-    } else {
-      res
-        .status(403)
-        .json({ message: "Sorry, no data found for this id", status: 403 });
-    }
+const getCats = (_: any, res: any) => {
+  const myCats: IJsonCatFormat[] = [];
+
+  myCatModel.getCats((cats: string[]) => {
+    cats.forEach((catHash: string, index: number) => {
+      catBuilder.getCatsByHash(catHash, (data: any) => {
+        myCats.push(format(catHash, data));
+        if (index === cats.length - 1) {
+          res.status(200).json({
+            response: myCats,
+            status: 200
+          });
+        }
+      });
+    });
   });
 };
 

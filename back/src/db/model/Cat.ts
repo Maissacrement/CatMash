@@ -1,18 +1,18 @@
-import { ICatModel } from '../../types/index';
-// import RedisManager from "./RedisManager";
+import { ICatModel } from "../../types/index";
+import Catbuilder from "./CatBuilder";
 
 export default class Cat {
   private catModel: ICatModel;
-  // private RedisManagerDb: RedisManager;
+  private catbuilder: Catbuilder;
 
   constructor() {
+    this.catbuilder = new Catbuilder();
     this.catModel = {
-      idManager: "CatModel",
       catPrefix: "cat",
-      type: "set",
-      childType: "hash"
+      childType: "hash",
+      idManager: "CatModel",
+      type: "set"
     };
-    // this.RedisManagerDb = new RedisManager();
   }
 
   // GET METHODS
@@ -21,13 +21,7 @@ export default class Cat {
     return this.catModel;
   }
 
-  public initDb() {
-    // this.RedisManagerDb.addSaddMember(this.idManager, "init");
-    /*
-    this.RedisManagerDb.exists(this.idManager, (dbExist: boolean) => {
-      if(!dbExist) {
-        this.RedisManagerDb.registeredOnSadd(this.idManager, "init");
-      }
-    })*/
+  public getCats(cb?: (catsList: string[]) => void) {
+    return this.catbuilder.getListOfCat(this.catModel.idManager, cb);
   }
 }

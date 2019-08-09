@@ -1,4 +1,4 @@
-import { ICat, ICatModel } from '../../types/index';
+import { ICat, ICatModel } from "../../types/index";
 import RedisManager from "./RedisManager";
 
 export default class CatBuilder {
@@ -40,6 +40,10 @@ export default class CatBuilder {
     callback?: (data: any) => void
   ): boolean {
     return this.RedisManagerDb.getSmembers(tagName, callback);
+  }
+
+  public getCatsByHash(hash: string, cb: (data: any) => void) {
+    this.RedisManagerDb.getHashValue(hash, cb);
   }
 
   public incLike(cat: string): boolean {

@@ -1,12 +1,9 @@
 import assert = require("assert");
 import RedisManager from "../../src/db/model/RedisManager";
+import { ICat } from "../../src/types/index";
+import Cat from "../../src/db/model/Cat";
 
-interface ICat {
-  image: string;
-  idAtelierApi: string;
-  actif: boolean;
-  like: number;
-}
+const myCatModel: Cat = new Cat();
 
 const object: ICat[] = [
   {
@@ -27,13 +24,13 @@ describe("Insert data on Redis module testing ...", () => {
   const Redis = new RedisManager();
 
   it("should be return true if bulk is a success", () => {
-    const execBulk = Redis.bulkInsertOfhash("catou973", "catmash", object);
+    const execBulk = Redis.bulkInsertOfhash(myCatModel.getCatModel(), object);
 
     assert.equal(execBulk, true);
   });
 
   it("return true if sadd member is created", () => {
-    const addSadd = Redis.addSaddMember("mycatlisttr2", "catmash");
+    const addSadd = Redis.addSaddMember("mycatlisttr2", "catmash", "set");
     assert.equal(typeof addSadd, "boolean");
   });
 

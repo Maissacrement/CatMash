@@ -15,8 +15,6 @@ router
   .get("/*", BadRequest);
 
 // POST
-router
-  .post("/insert", insertCat)
-  .post("/*", BadRequest);
+router.post("/insert", insertCat).post("/*", BadRequest);
 
 export default router;

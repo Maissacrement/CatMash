@@ -1,4 +1,4 @@
-import { ICat, ICatModel } from '../../types/index';
+import { ICat, ICatModel } from "../../types/index";
 import db from "../index";
 
 export default class RedisManager {
@@ -11,10 +11,7 @@ export default class RedisManager {
   // Manage Value of Key
 
   // Inc a key start on 0 is nb is undefined
-  public incValueOfKey(
-    key: string,
-    callback?: (id: any) => void
-  ): boolean {
+  public incValueOfKey(key: string, callback?: (id: any) => void): boolean {
     return this.db.incr(key, this.execute(callback));
   }
 
@@ -71,13 +68,13 @@ export default class RedisManager {
 
   public registeredOnSadd(tags: string, arg: string): boolean {
     return this.db.sadd(tags, arg, (err: any, reply: any) => {
-        this.rejectErr(err);
-        if(reply) {
-          process.stdout.write("Data added with success\n");
-        } else {
-          process.stdout.write("Cat is not set\n");
-        }
-      })
+      this.rejectErr(err);
+      if (reply) {
+        process.stdout.write("Data added with success\n");
+      } else {
+        process.stdout.write("Cat is not set\n");
+      }
+    });
   }
 
   // GET SADD Members
@@ -87,12 +84,15 @@ export default class RedisManager {
   }
 
   public addSaddMember(idManager: string, arg: string, type: string): boolean {
-    console.log(idManager, arg, type);
-    return this.workOnDataBaseVariable(type, idManager, (canBeSetup: boolean) => {
-      if(canBeSetup) {
-        this.registeredOnSadd(idManager, arg)
+    return this.workOnDataBaseVariable(
+      type,
+      idManager,
+      (canBeSetup: boolean) => {
+        if (canBeSetup) {
+          this.registeredOnSadd(idManager, arg);
+        }
       }
-    })
+    );
   }
 
   /************ Work on a generique Version ************/
@@ -103,9 +103,9 @@ export default class RedisManager {
     const [type, id, cb] = args;
 
     return this.exists(id, (found: boolean) => {
-      return !found ?
-        cb(found) : // if is not found run cb
-        this.acceptType(type, id, cb); // is found: reset or no
+      return !found
+        ? cb(found) // if is not found run cb
+        : this.acceptType(type, id, cb); // is found: reset or no
     });
   }
 
@@ -134,7 +134,6 @@ export default class RedisManager {
     variable: string,
     callback?: (response: boolean) => void
   ): boolean {
-
     return this.db.exists(variable, (error: any, message: string) => {
       this.rejectErr(error);
       this.isDefined(message, callback);
@@ -143,10 +142,7 @@ export default class RedisManager {
 
   // Bulk insert Cats
 
-  public bulkInsertOfhash(
-    model: ICatModel,
-    object: ICat[]
-  ) {
+  public bulkInsertOfhash(model: ICatModel, object: ICat[]) {
     // Constante
     const { idManager, catPrefix, type } = model;
     // Say if all the data is correctly recorded
@@ -156,7 +152,6 @@ export default class RedisManager {
       if (isValide) {
         isValide =
           this.incValueOfKey(`${catPrefix}`, async (id: any) => {
-
             const catId: string = `${catPrefix}:${id}`;
 
             // Try create hash and push it in an hash array
@@ -175,9 +170,11 @@ export default class RedisManager {
 
   // Manage data as her type
 
-  private manageDataType(type: string, callback: (isCorrectType: boolean) => void) {
+  private manageDataType(
+    type: string,
+    callback: (isCorrectType: boolean) => void
+  ) {
     return (typeOfTag: string): void => {
-      console.log(type, typeOfTag);
       if (typeOfTag === type) {
         if (callback) {
           callback(true);
@@ -191,7 +188,7 @@ export default class RedisManager {
           "SADD not registred because tag is already define as a non-assignable type, please change tag\n"
         );
       }
-    }
+    };
   }
 
   // Execute cb
@@ -204,7 +201,7 @@ export default class RedisManager {
       if (cb) {
         cb(reply);
       }
-    }
+    };
   }
 
   // Check If is Define

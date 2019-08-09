@@ -14,3 +14,8 @@ export interface ICat {
   actif: boolean;
   like: number;
 }
+
+export interface IJsonCatFormat {
+  name: string;
+  data: ICat;
+}
