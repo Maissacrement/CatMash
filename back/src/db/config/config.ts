@@ -1,10 +1,10 @@
-export interface IRedisTs {
+export interface IRedisOpts {
   port: number;
   host: string;
   options?: {} | undefined;
 }
 
-const config: IRedisTs = {
+const config: IRedisOpts = {
   host: process.env.REDIS_ADDRESS
     ? `${process.env.REDIS_ADDRESS}`
     : "127.0.0.1",

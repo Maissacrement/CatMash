@@ -1,0 +1,77 @@
+{
+	"info": {
+		"_postman_id": "bf6b6898-02b6-4255-a230-8bebded945b6",
+		"name": "CatMash",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "bulkInsertCat",
+			"item": [
+				{
+					"name": "http://localhost:6548/insert",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"actif\": true,\n    \"idAtelierApi\": \"string3\",\n    \"image\": \"string\",\n    \"like\": 0\n  },\n  {\n    \"actif\": true,\n    \"idAtelierApi\": \"string53\",\n    \"image\": \"string\",\n    \"like\": 0\n  }\n]"
+						},
+						"url": {
+							"raw": "http://localhost:6548/insert",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "6548",
+							"path": [
+								"insert"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "voteApi",
+			"item": [
+				{
+					"name": "http://localhost:6548/like?choice=like&id=catmash:182",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:6548/like?choice=like&id=catmash:182",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "6548",
+							"path": [
+								"like"
+							],
+							"query": [
+								{
+									"key": "choice",
+									"value": "like"
+								},
+								{
+									"key": "id",
+									"value": "catmash:182"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,4 +1,5 @@
 import RedisManager from "./RedisManager";
+
 interface ICat {
   image: string;
   idAtelierApi: string;
@@ -21,13 +22,13 @@ export default class CatBuilder {
   }
 
   public emptyQueue() {
-    this.queue = [];
-
+    this.queue = [] as ICat[];
     return true;
   }
 
   // Push my queue element on redis, return `true` on success.
-  public queuePushOnRedis(idManager: string, idName: string) {
+  public queuePushOnRedis(aCat: any) {
+    const { idManager, idName } = aCat.getCatModel();
     return this.RedisManagerDb.bulkInsertOfhash(idManager, idName, this.queue)
       ? this.emptyQueue()
       : null;

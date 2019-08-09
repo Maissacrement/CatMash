@@ -3,31 +3,13 @@ import CatBuilder from "../../db/model/CatBuilder";
 
 const catBuilder: CatBuilder = new CatBuilder();
 
-const addCatOnDb = (_: any, res: any) => {
-  const newCat = new Cat({
-    idAtelierApi: "26",
-    image: "http://myimg.png"
-  });
-
-  const isCreate = newCat.addCatOnRedis((id: number) =>
-    process.stdout.write(`${id}`)
-  );
-
-  if (isCreate) {
-    res.status(200).json({ message: "User create successfully", status: 200 });
-  } else {
-    res.status(403).json({ message: "User is not create", status: 403 });
-  }
-};
-
 const insertCat = (req: any, res: any) => {
   const cats = req.body; // as ICat
-  const catBuilder = new CatBuilder();
 
   // Add cat on queue builder
   catBuilder.queuePush(cats);
 
-  const addOnRedis = catBuilder.queuePushOnRedis("cato973", "cats");
+  const addOnRedis = catBuilder.queuePushOnRedis(new Cat());
 
   if (addOnRedis) {
     res
@@ -110,12 +92,12 @@ const searchCat = (exist: boolean, opts: any) => {
   }
 };
 
-const likeACat = (req: any, res: any) => {
+const likeACat = (req: any, result: any) => {
   // Define constante
   const opts = {
-    id: req.query.id || "catmash:182",
     choice: req.query.choice,
-    res: res
+    id: req.query.id,
+    res: result
   };
 
   // Search if cat exist
@@ -133,7 +115,6 @@ const likeACat = (req: any, res: any) => {
 const getCats = (req: any, res: any) => {
   const id = req.query.id;
 
-  const catBuilder = new CatBuilder();
   catBuilder.getListOfCat(id, (data: []) => {
     if (data.length > 0) {
       res.status(200).json({ datas: data, status: 200 });
@@ -145,4 +126,4 @@ const getCats = (req: any, res: any) => {
   });
 };
 
-export { addCatOnDb, insertCat, likeACat, getCats };
+export { insertCat, likeACat, getCats };

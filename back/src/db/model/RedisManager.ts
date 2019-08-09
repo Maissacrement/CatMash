@@ -191,6 +191,7 @@ export default class RedisManager {
     variable: string,
     callback?: (message: boolean) => void
   ): boolean {
+
     return this.db.exists(variable, (error: any, message: string) => {
       this.rejectErr(error);
       this.isDefined(message, callback);
@@ -200,12 +201,12 @@ export default class RedisManager {
   // Work in progress
 
   public bulkInsertOfhash(
-    nameOfArrayId: string,
-    idName: string,
+    idManager: string, // Array of id
+    idName: string, // name of prefix
     object: ICat[]
   ) {
     // Say if all the data is correctly recorded
-    let isValide = this.exists(nameOfArrayId);
+    let isValide = this.exists(idManager);
 
     for (const key in object) {
       if (isValide) {
@@ -213,10 +214,12 @@ export default class RedisManager {
           this.incValueOfKey(`${idName}`, async (err: any, id: any) => {
             this.rejectErr(err);
 
+            const catId: string = `${idName}:${id}`;
+
             // Try create hash and push it in an hash array
             try {
-              await this.addANewHash(`${idName}:${id}`, object[key]);
-              await this.addSaddMember(nameOfArrayId, `${idName}:${id}`);
+              await this.addANewHash(catId, object[key]);
+              await this.addSaddMember(idManager, catId);
             } catch (err) {
               process.stdout.write(`\n${err}`);
             }
