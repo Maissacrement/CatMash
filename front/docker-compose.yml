@@ -1,0 +1,7 @@
+version: "3"
+services:
+  catmash:
+    build : .
+    container_name: "catmash"
+    ports:
+      - 14525:80

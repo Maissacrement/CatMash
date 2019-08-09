@@ -1,4 +1,7 @@
-# front
+# Catmash
+```bash
+    Projet definie sous node 11.14.0
+```
 
 ## Project setup
 ```
@@ -7,7 +10,8 @@ yarn install
 
 ### Compiles and hot-reloads for development
 ```
-yarn run serve
+yarn run dev
+yarn run dev:pwa #Only chromium browser in local
 ```
 
 ### Compiles and minifies for production
