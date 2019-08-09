@@ -48,7 +48,7 @@ export default class RedisManager {
           throw new Error(`${err}`);
         }
         process.stdout.write(
-          `\nSuccess you have ${nbOfKeyAdded} element in your array`
+          `Success you have ${nbOfKeyAdded} element in your array\n`
         );
       }
     );
@@ -69,36 +69,30 @@ export default class RedisManager {
 
   // SADD Members
 
-  public registeredOnSadd(tags: string, arg: string, canRegiter: boolean): boolean {
-    return canRegiter ?
-    this.db.sadd(tags, arg, (err: any, reply: any) => {
-      this.rejectErr(err);
-      process.stdout.write(JSON.stringify(reply, null, 2));
-    }) :
-    false;
+  public registeredOnSadd(tags: string, arg: string): boolean {
+    return this.db.sadd(tags, arg, (err: any, reply: any) => {
+        this.rejectErr(err);
+        if(reply) {
+          process.stdout.write("Data added with success\n");
+        } else {
+          process.stdout.write("Cat is not set\n");
+        }
+      })
   }
+
+  // GET SADD Members
 
   public getSmembers(tags: string, callback?: (tag: string) => void): boolean {
     return this.db.smembers(tags, this.execute(callback));
   }
 
-  public addSaddMember(tags: string, arg: string): boolean {
-    /*
-    const success = this.exists(tags, (found: boolean) => {
-      const registered = this.registeredOnSadd(tags, arg);
-      return !found
-        ? registered
-        : this.acceptType(tags, arg, (isSetType: boolean) => {
-          if(isSetType) {
-            registered
-          }
-        });
-    });*/
-    const success = true;
-
-    console.log(success, tags, arg);
-
-    return success;
+  public addSaddMember(idManager: string, arg: string, type: string): boolean {
+    console.log(idManager, arg, type);
+    return this.workOnDataBaseVariable(type, idManager, (canBeSetup: boolean) => {
+      if(canBeSetup) {
+        this.registeredOnSadd(idManager, arg)
+      }
+    })
   }
 
   /************ Work on a generique Version ************/
@@ -107,7 +101,7 @@ export default class RedisManager {
     ...args: [string, string, (arg: boolean) => void]
   ): boolean {
     const [type, id, cb] = args;
-    
+
     return this.exists(id, (found: boolean) => {
       return !found ?
         cb(found) : // if is not found run cb
@@ -118,7 +112,7 @@ export default class RedisManager {
   public acceptType(
     type: string,
     tag: string,
-    callback?: (arg: boolean) => void
+    callback: (arg: boolean) => void
   ) {
     return this.type(tag, this.manageDataType(type, callback));
   }
@@ -154,7 +148,7 @@ export default class RedisManager {
     object: ICat[]
   ) {
     // Constante
-    const { idManager, catPrefix } = model;
+    const { idManager, catPrefix, type } = model;
     // Say if all the data is correctly recorded
     let isValide = this.exists(idManager);
 
@@ -168,9 +162,9 @@ export default class RedisManager {
             // Try create hash and push it in an hash array
             try {
               await this.addANewHash(catId, object[key]);
-              await this.addSaddMember(idManager, catId);
+              await this.addSaddMember(idManager, catId, type);
             } catch (err) {
-              process.stdout.write(`\n${err}`);
+              process.stdout.write(`${err}\n`);
             }
           }) && isValide;
       }
@@ -181,13 +175,14 @@ export default class RedisManager {
 
   // Manage data as her type
 
-  private manageDataType(type: string, callback?: (isCorrectType: boolean) => void) {
+  private manageDataType(type: string, callback: (isCorrectType: boolean) => void) {
     return (typeOfTag: string): void => {
+      console.log(type, typeOfTag);
       if (typeOfTag === type) {
         if (callback) {
           callback(true);
         }
-        process.stdout.write("Request executed");
+        process.stdout.write("Request executed\n");
       } else {
         if (callback) {
           callback(false);
@@ -231,27 +226,6 @@ export default class RedisManager {
   /******************** WORK IN PROGRESS *************************/
 
   /*
-
-  // Add Cat
-
-  private addCat(model: ICatModel, catToInsertOnRedis: ICat) {
-    // Constante
-    const { idManager, catPrefix } = model;
-    return async (err: any, id: any) => {
-      try {
-        this.rejectErr(err);
-
-        const catId: string = `${catPrefix}:${id}`;
-
-        // Try create hash and push it in an hash array
-
-        await this.addANewHash(catId, catToInsertOnRedis);
-        await this.addSaddMember(idManager, catId);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  }
 
   // Manage assigned value
 

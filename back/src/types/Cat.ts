@@ -4,8 +4,8 @@ export type TChildType = "hash";
 export interface ICatModel {
   idManager: string;
   catPrefix: string;
-  type?: Ttype;
-  childType?: TChildType;
+  type: Ttype;
+  childType: TChildType;
 }
 
 export interface ICat {
