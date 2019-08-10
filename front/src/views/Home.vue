@@ -12,9 +12,9 @@
       </div>
       <div class="bottom-out-flow">
         <Print text="Voir les plus beaux chats" />
-        <Print 
-          :text="nbVotes" 
-          appendText="votes" 
+        <Print
+          :text="nbVotes"
+          appendText="votes"
         />
       </div>
     </div>
@@ -25,6 +25,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Print from '@/components/Print.vue';
 import Cat from '@/components/Cat.vue';
+import RestProvider from '../providers/rest/rest';
 
 @Component({
   components: {
@@ -34,14 +35,26 @@ import Cat from '@/components/Cat.vue';
 })
 export default class Home extends Vue {
   public nbVotes: number;
+  private Rest: RestProvider;
+  private cats: any[];
 
   constructor() {
     super();
     this.nbVotes = 0;
+    this.Rest = new RestProvider();
+    this.cats = [];
+    // alert(Rest.getCat());
   }
 
   public increment(): void {
       this.nbVotes += 1;
+      this.Rest.getCats()
+        .then((result: any) => {
+          this.cats = [...result];
+          alert(this.cats);
+        }).catch((err: any) => {
+          throw new Error(`data no found ${err}`);
+        });
   }
 
   public decrement(): void {

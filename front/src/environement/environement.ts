@@ -1,3 +1,3 @@
-const Domain: string = 'localhost:8081';
+const Domain: string = 'http://localhost:6548';
 
 export default Domain;
