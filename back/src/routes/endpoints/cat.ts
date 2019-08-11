@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
-import { ICat, IJsonCatFormat } from "../../types/index";
+import { ICat } from "../../types/index";
 
 const catBuilder: CatBuilder = new CatBuilder();
 const myCatModel: Cat = new Cat();
@@ -172,29 +172,20 @@ const likeACat = (req: any, result: any) => {
 
 /******************** GET CAT ENDPOINT ************************/
 
-const format = (nameOfCat: string, response: any) => {
-  return {
-    data: response,
-    name: nameOfCat
-  };
-};
+const getCats = async (_: any, res: any) => {
+  try {
+    const cats = await myCatModel.getCats();
 
-const getCats = (_: any, res: any) => {
-  const myCats: IJsonCatFormat[] = [];
-
-  myCatModel.getCats((cats: string[]) => {
-    cats.forEach((catHash: string, index: number) => {
-      catBuilder.getCatsByHash(catHash, (data: any) => {
-        myCats.push(format(catHash, data));
-        if (index === cats.length - 1) {
-          res.status(200).json({
-            response: myCats,
-            status: 200
-          });
-        }
-      });
-    });
-  });
+    res.status(200).json({
+      response: cats,
+      status: 200
+    })
+  } catch (err) {
+    res.status(403).json({
+      response: err,
+      status: 403
+    })
+  }
 };
 
 /***************** END GET CAT ENDPOINT *********************/
