@@ -2,6 +2,7 @@
 // import { Auth } from '../../types';
 import axios from 'axios';
 import Domain from '../../environement/environement';
+// import { ICatResponse } from '../../types/index';
 
 export default class RestProvider {
   // Private constante
@@ -18,7 +19,7 @@ export default class RestProvider {
 
   // REST: Get cat list
 
-  public getCats() {
+  public getCats(): Promise<any[]> {
     const headers = this.jsonHeader;
 
     return new Promise((resolve, reject) => {

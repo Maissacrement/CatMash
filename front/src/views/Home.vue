@@ -46,15 +46,32 @@ export default class Home extends Vue {
     // alert(Rest.getCat());
   }
 
+  public mounted() {
+    this.loadCat();
+  }
+
+  public async loadCat() {
+    let result;
+    try{
+      result = await this.Rest.getCats();
+      this.cats = [...result];
+
+    } catch(err) {
+      throw new Error(err);
+    }
+
+    /*
+    alert('hello');
+    const result = Promise.all([this.Rest.getCats()]);
+
+    result
+      .then((cats: any) => alert(cats))
+      .catch((err: any) => alert(`${JSON.stringify(err)}`));
+    */
+  }
+
   public increment(): void {
       this.nbVotes += 1;
-      this.Rest.getCats()
-        .then((result: any) => {
-          this.cats = [...result];
-          alert(this.cats);
-        }).catch((err: any) => {
-          throw new Error(`data no found ${err}`);
-        });
   }
 
   public decrement(): void {
