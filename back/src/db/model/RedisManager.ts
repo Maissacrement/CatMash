@@ -1,4 +1,4 @@
-import { ICat, ICatModel } from "../../types/index";
+import { ICatFormatNoStatic, ICatModel } from "../../types/index";
 import db from "../index";
 
 export default class RedisManager {
@@ -140,9 +140,11 @@ export default class RedisManager {
     });
   }
 
+  /*************************** Bulk Insert ***************************/
+
   // Bulk insert Cats
 
-  public bulkInsertOfhash(model: ICatModel, object: ICat[]) {
+  public bulkInsertOfhash(model: ICatModel, object: ICatFormatNoStatic[]) {
     // Constante
     const { idManager, catPrefix, type } = model;
     // Say if all the data is correctly recorded
@@ -167,6 +169,8 @@ export default class RedisManager {
 
     return isValide;
   }
+
+  /************************** End Bulk ****************************/
 
   // Manage data as her type
 
