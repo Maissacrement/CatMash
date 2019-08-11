@@ -2,10 +2,10 @@
   <div class="home">
     <div class="main">
       <div @click="increment()" class="left">
-        <Cat :borderColor="true" />
+        <Cat :borderColor="true" :urlImg="this.catImg.left" />
       </div>
       <div @click="decrement()" class="right">
-        <Cat />
+        <Cat :urlImg="''" />
       </div>
       <div class="top-out-flow">
         <img src="@/assets/image823.png" class="logo" />
@@ -26,6 +26,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import Print from '@/components/Print.vue';
 import Cat from '@/components/Cat.vue';
 import RestProvider from '../providers/rest/rest';
+import { ICatResponse } from '../types/index';
 
 @Component({
   components: {
@@ -36,38 +37,22 @@ import RestProvider from '../providers/rest/rest';
 export default class Home extends Vue {
   public nbVotes: number;
   private Rest: RestProvider;
-  private cats: any[];
+  private cats: ICatResponse[];
+  private catImg: any;
 
   constructor() {
     super();
     this.nbVotes = 0;
     this.Rest = new RestProvider();
     this.cats = [];
-    // alert(Rest.getCat());
+    this.catImg = {
+      left: '',
+      right: '',
+    };
   }
 
   public mounted() {
     this.loadCat();
-  }
-
-  public async loadCat() {
-    let result;
-    try{
-      result = await this.Rest.getCats();
-      this.cats = [...result];
-
-    } catch(err) {
-      throw new Error(err);
-    }
-
-    /*
-    alert('hello');
-    const result = Promise.all([this.Rest.getCats()]);
-
-    result
-      .then((cats: any) => alert(cats))
-      .catch((err: any) => alert(`${JSON.stringify(err)}`));
-    */
   }
 
   public increment(): void {
@@ -76,6 +61,24 @@ export default class Home extends Vue {
 
   public decrement(): void {
       this.nbVotes -= 1;
+  }
+
+  private propertyExist(object: any, property: string) {
+    return Object.prototype.hasOwnProperty.call(object, property);
+  }
+
+  private async loadCat() {
+    let result: ICatResponse[];
+    try {
+      result = await this.Rest.getCats();
+      this.cats = [...result];
+
+      // After fetch data
+      this.catImg.left = this.cats[0].data.image;
+
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 }
 </script>

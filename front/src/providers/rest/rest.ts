@@ -37,6 +37,5 @@ export default class RestProvider {
           reject(err);
         });
     });
-
   }
 }
