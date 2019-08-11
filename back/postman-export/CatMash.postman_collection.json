@@ -72,6 +72,31 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "getCats",
+			"item": [
+				{
+					"name": "http://localhost:6548/cats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:6548/cats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "6548",
+							"path": [
+								"cats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

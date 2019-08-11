@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
 import { ICat, IJsonCatFormat } from "../../types/index";
@@ -5,7 +6,10 @@ import { ICat, IJsonCatFormat } from "../../types/index";
 const catBuilder: CatBuilder = new CatBuilder();
 const myCatModel: Cat = new Cat();
 
-const insertCat = (req: any, res: any) => {
+/******************** POST: Bulk Insert Cats ********************/
+
+/*
+  const insertCat = (req: any, res: any) => {
   const cats: ICat[] = req.body;
 
   // Add cat on queue builder
@@ -19,8 +23,60 @@ const insertCat = (req: any, res: any) => {
       .json({ message: "Cat added by bulk method successfully", status: 200 });
   } else {
     res.status(403).json({ message: "Error bulk", status: 403 });
+  }*/
+
+const tryExecuteCreateCat = (exec: any, res: any) => {
+  if (exec) {
+    res
+      .status(200)
+      .json({ message: "Cat added by bulk method successfully", status: 200 });
+  } else {
+    res.status(403).json({ message: "Error bulk", status: 403 });
+  }
+}
+
+const createCat = async (listOfCats: ICat[], res: any) => {
+  const cats: ICat[] = listOfCats;
+  const getCats = await catBuilder.formatCat(cats);
+
+  // Add cat on queue builder
+  catBuilder.queuePush(getCats);
+
+  const addOnRedis = catBuilder.queuePushOnRedis(myCatModel.getCatModel());
+
+  // Try exec Db Request
+  tryExecuteCreateCat(addOnRedis, res);
+}
+
+const catExist = (opts: any) => {
+  const { catsList, response, state } = opts;
+  if(state) {
+    createCat(catsList.data.images, response);
+
+  } else {
+    throw new Error('Cats is not defined');
+  }
+}
+
+const insertCat = async (_: any, res: any, next: any) => {
+  let cats;
+  try {
+    cats = await axios.get('https://latelier.co/data/cats.json');
+    const isDefined = Object.prototype.hasOwnProperty.call(cats.data, 'images');
+    const opts = {
+      catsList : cats,
+      response: res,
+      state: isDefined,
+    }
+
+    catExist(opts);
+  } catch (err) {
+    next(err); // Continue after Error handling
+    throw new Error('Error to fetch cats');
   }
 };
+
+/******************** END Post Bulk Insert Cats ********************/
 
 /********************* \/GET LIKE ENDPOINT **********************/
 
@@ -57,7 +113,7 @@ const manageReject = (opts: any, messageError: string) => {
 
 const catFoundWithSuccess = (data: any, opts: any, exec: any) => {
   const { res } = opts;
-  process.stdout.write(`my data: ${JSON.stringify(data)}\n`);
+  // process.stdout.write(`my data: ${JSON.stringify(data)}\n`);
   res.status(200).json({ results: data, message: exec.message, status: 200 });
 };
 
@@ -114,6 +170,8 @@ const likeACat = (req: any, result: any) => {
 
 /********************* END LIKE ENDPOINT **********************/
 
+/******************** GET CAT ENDPOINT ************************/
+
 const format = (nameOfCat: string, response: any) => {
   return {
     data: response,
@@ -138,5 +196,7 @@ const getCats = (_: any, res: any) => {
     });
   });
 };
+
+/***************** END GET CAT ENDPOINT *********************/
 
 export { insertCat, likeACat, getCats };

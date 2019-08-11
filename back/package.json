@@ -22,12 +22,13 @@
     "dev:nodebug": "ts-node-dev --respawn --transpileOnly bin/dev"
   },
   "dependencies": {
-    "bluebird": "latest",
     "@types/bluebird": "^3.5.27",
     "@types/cors": "^2.8.5",
     "@types/redis": "^2.8.13",
     "@types/sequelize": "^4.28.4",
     "@types/validator": "^10.11.2",
+    "axios": "^0.19.0",
+    "bluebird": "latest",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",

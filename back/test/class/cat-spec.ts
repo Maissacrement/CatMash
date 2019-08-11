@@ -1,5 +1,5 @@
 import Cat from "../../src/db/model/Cat";
-import { ICatModel } from "../../src/types/index";
+import { ICatModel } from "../../src/types";
 import assert = require("assert");
 // import * as chai from "chai";
 

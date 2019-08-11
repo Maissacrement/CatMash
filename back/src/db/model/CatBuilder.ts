@@ -1,9 +1,9 @@
-import { ICat, ICatModel } from "../../types/index";
+import { ICat, ICatModel, ICatFormat, ICatFormatNoStatic, lAtelier } from "../../types/index";
 import RedisManager from "./RedisManager";
 
 export default class CatBuilder {
   private RedisManagerDb: RedisManager;
-  private queue: ICat[];
+  private queue: ICatFormatNoStatic[];
 
   constructor() {
     this.queue = [];
@@ -11,12 +11,12 @@ export default class CatBuilder {
   }
 
   // Add ICat[] element in CatBuilder queue.
-  public queuePush(arrayOfCats: ICat[]): void {
+  public queuePush(arrayOfCats: ICatFormatNoStatic[]): void {
     this.queue = this.queue.concat(arrayOfCats);
   }
 
   public emptyQueue() {
-    this.queue = [] as ICat[];
+    this.queue = [] as ICatFormatNoStatic[];
     return true;
   }
 
@@ -68,5 +68,31 @@ export default class CatBuilder {
       `${newIdToadded}`,
       callback
     );
+  }
+
+  // Format to Cats
+  public formatCat(cats: lAtelier[]): Promise<ICatFormatNoStatic[]> {
+    return new Promise((resolve: any, reject: any) => {
+      let listOfCat: ICatFormatNoStatic[] = [];
+
+      cats.forEach((datas: any) => {
+        listOfCat.push(this.parseToCatsModel(datas));
+      });
+
+      if(listOfCat.length > 0) {
+        resolve(listOfCat);
+      }
+      reject("Error no cats found");
+    });
+  }
+
+  // object to Cats Model format
+  private parseToCatsModel(data: lAtelier): ICatFormat {
+    return {
+      image: data.url,
+      idAtelierApi: data.id,
+      actif: false,
+      like: 0,
+    }
   }
 }
