@@ -1,4 +1,4 @@
-import { ICat, ICatModel, ICatFormat, ICatFormatNoStatic, lAtelier } from "../../types/index";
+import { ICatModel, ICatFormat, ICatFormatNoStatic, lAtelier } from "../../types/index";
 import RedisManager from "./RedisManager";
 
 export default class CatBuilder {

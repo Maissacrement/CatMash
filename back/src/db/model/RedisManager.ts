@@ -104,7 +104,7 @@ export default class RedisManager {
 
     return this.exists(id, (found: boolean) => {
       return !found
-        ? cb(found) // if is not found run cb
+        ? cb(true) // if is not found run cb
         : this.acceptType(type, id, cb); // is found: reset or no
     });
   }
@@ -148,6 +148,7 @@ export default class RedisManager {
     // Constante
     const { idManager, catPrefix, type } = model;
     // Say if all the data is correctly recorded
+    console.log('id: ', idManager);
     let isValide = this.exists(idManager);
 
     for (const key in object) {
