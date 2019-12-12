@@ -19,7 +19,9 @@
     "watch": "npm run build -- --watch",
     "watch:test": "npm run test -- --watch",
     "dev": "node --inspect=5858 -r ts-node/register bin/dev",
-    "dev:nodebug": "ts-node-dev --respawn --transpileOnly bin/dev"
+    "dev:nodebug": "ts-node-dev --respawn --transpileOnly bin/dev",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "@types/bluebird": "^3.5.27",
@@ -36,7 +38,8 @@
     "express-session": "^1.16.2",
     "kafka-node": "^4.1.3",
     "redis": "^2.8.0",
-    "ts-node-dev": "^1.0.0-pre.40"
+    "ts-node-dev": "^1.0.0-pre.40",
+    "snyk": "^1.258.2"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",
@@ -96,5 +99,6 @@
   "bugs": {
     "url": "https://github.com/Maissacrement/CatMash/issues"
   },
-  "homepage": "https://github.com/Maissacrement/CatMash#readme"
+  "homepage": "https://github.com/Maissacrement/CatMash#readme",
+  "snyk": true
 }
