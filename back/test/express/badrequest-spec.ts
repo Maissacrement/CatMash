@@ -12,17 +12,17 @@ app.use(router);
 const expect = chai.expect;
 
 describe("BadRequest test", () => {
-  it("Display an error for all path not specified", done => {
+  it("Display an error for all path not specified", (done) => {
     supertest(app)
       .get("/dfezfezfezfezdza")
-      .then(value => {
+      .then((value) => {
         expect(value.body).to.be.a("object");
         expect(value.body.message).to.equal("Path not found");
         expect(value.body.status).to.equal(404);
 
         done();
       })
-      .catch(err => {
+      .catch((err) => {
         process.stdout.write(`${err}`);
       });
   });

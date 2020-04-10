@@ -1,0 +1,30 @@
+#redis:6.0-rc3-alpine
+version: "3"
+services:
+  catmashredis:
+    image : redis:6.0-rc3-alpine
+    privileged: true
+    ports :
+      - "6379:6379"
+
+  catmashback:
+    build : ./back
+    container_name: "catmashback"
+    network_mode: host
+    depends_on:
+      - catmashredis
+    env_file:
+      - ./back/.env
+    ports:
+      - "6548:6548"
+
+  catmashfront:
+    build : ./front
+    container_name: "catmashfront"
+    links:
+      - catmashback
+    depends_on:
+      - catmashredis
+      - catmashback
+    ports:
+      - 14525:80

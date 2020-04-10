@@ -1,2 +1,2 @@
-export function someAction(/* context */) {
-}
+/* eslint-disable */
+// export function someAction(/* context */) {}

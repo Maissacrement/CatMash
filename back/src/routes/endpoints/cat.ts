@@ -1,7 +1,8 @@
-import axios from 'axios';
+// import axios from "axios";
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
 import { ICat } from "../../types/index";
+import FakeApi from "../../api/catsFakeApi"
 
 const catBuilder: CatBuilder = new CatBuilder();
 const myCatModel: Cat = new Cat();
@@ -33,7 +34,7 @@ const tryExecuteCreateCat = (exec: any, res: any) => {
   } else {
     res.status(403).json({ message: "Error bulk", status: 403 });
   }
-}
+};
 
 const createCat = async (listOfCats: ICat[], res: any) => {
   const cats: ICat[] = listOfCats;
@@ -46,33 +47,34 @@ const createCat = async (listOfCats: ICat[], res: any) => {
 
   // Try exec Db Request
   tryExecuteCreateCat(addOnRedis, res);
-}
+};
 
 const catExist = (opts: any) => {
   const { catsList, response, state } = opts;
-  if(state) {
-    createCat(catsList.data.images, response);
-
+  if (state) {
+    createCat(catsList.images, response);
   } else {
-    throw new Error('Cats is not defined');
+    throw new Error("Cats is not defined");
   }
-}
+};
 
 const insertCat = async (_: any, res: any, next: any) => {
   let cats;
   try {
-    cats = await axios.get('https://latelier.co/data/cats.json');
-    const isDefined = Object.prototype.hasOwnProperty.call(cats.data, 'images');
+    // cats = await axios.get("https://latelier.co/data/cats.json");
+
+    cats = FakeApi;
+    const isDefined = Object.prototype.hasOwnProperty.call(cats, "images");
     const opts = {
-      catsList : cats,
+      catsList: cats,
       response: res,
       state: isDefined,
-    }
+    };
 
     catExist(opts);
   } catch (err) {
     next(err); // Continue after Error handling
-    throw new Error('Error to fetch cats');
+    throw new Error("Error to fetch cats");
   }
 };
 
@@ -85,7 +87,7 @@ type Vote = "like" | "dislike";
 const vote = (choice: Vote, id: string) => {
   const exec = {
     builder: false,
-    message: ""
+    message: "",
   };
   switch (choice) {
     case "like":
@@ -155,7 +157,7 @@ const likeACat = (req: any, result: any) => {
   const opts = {
     choice: req.query.choice,
     id: req.query.id,
-    res: result
+    res: result,
   };
 
   // Search if cat exist
@@ -178,13 +180,13 @@ const getCats = async (_: any, res: any) => {
 
     res.status(200).json({
       response: cats,
-      status: 200
-    })
+      status: 200,
+    });
   } catch (err) {
     res.status(403).json({
       response: err,
-      status: 403
-    })
+      status: 403,
+    });
   }
 };
 

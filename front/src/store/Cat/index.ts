@@ -1,12 +1,14 @@
-import state from './state';
+import { state } from './state';
 import * as getters from './getters';
-import * as mutations from './mutations';
-import * as actions from './actions';
+// import * as mutations from './mutations';
+// import * as actions from './actions';
+
+const namespaced = true;
 
 export default {
-  namespaced: true,
+  namespaced,
   getters,
-  mutations,
-  actions,
+  // mutations,
+  // actions,
   state,
-}
+};

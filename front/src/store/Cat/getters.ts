@@ -1,2 +1,3 @@
-export function someGetter (/* state */) {
+export function getCats(state: any) {
+  return state.cat;
 }

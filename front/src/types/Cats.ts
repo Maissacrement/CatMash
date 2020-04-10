@@ -1,5 +1,6 @@
 export interface ICat {
-  image: string;
+  image?: string;
+  url?: string;
   idAtelierApi: string;
   actif: boolean;
   like: number;

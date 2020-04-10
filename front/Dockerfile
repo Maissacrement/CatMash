@@ -1,7 +1,7 @@
 # -------- Vuejs --------
 
 # Image Location
-FROM node:11.14.0-alpine 
+FROM node:11.14.0-alpine
 
 # MAINTENER
 MAINTAINER Maissacrement <emmariodelar@gmail.com>

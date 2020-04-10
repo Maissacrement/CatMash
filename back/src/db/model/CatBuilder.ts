@@ -1,4 +1,9 @@
-import { ICatModel, ICatFormat, ICatFormatNoStatic, lAtelier } from "../../types/index";
+import {
+  ICatModel,
+  ICatFormat,
+  ICatFormatNoStatic,
+  lAtelier,
+} from "../../types/index";
 import RedisManager from "./RedisManager";
 
 export default class CatBuilder {
@@ -79,7 +84,7 @@ export default class CatBuilder {
         listOfCat.push(this.parseToCatsModel(datas));
       });
 
-      if(listOfCat.length > 0) {
+      if (listOfCat.length > 0) {
         resolve(listOfCat);
       }
       reject("Error no cats found");
@@ -93,6 +98,6 @@ export default class CatBuilder {
       idAtelierApi: data.id,
       actif: false,
       like: 0,
-    }
+    };
   }
 }

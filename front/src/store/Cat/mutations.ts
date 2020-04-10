@@ -1,2 +1,2 @@
-export function someMutation(/* state */) {
-}
+/* eslint-disable */
+// export function someMutation(/* state */) {}

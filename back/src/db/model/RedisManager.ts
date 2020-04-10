@@ -148,7 +148,7 @@ export default class RedisManager {
     // Constante
     const { idManager, catPrefix, type } = model;
     // Say if all the data is correctly recorded
-    console.log('id: ', idManager);
+    console.log("id: ", idManager);
     let isValide = this.exists(idManager);
 
     for (const key in object) {

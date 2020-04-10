@@ -11,7 +11,7 @@ export default class Cat {
       catPrefix: "cat",
       childType: "hash",
       idManager: "CatModel",
-      type: "set"
+      type: "set",
     };
   }
 
@@ -26,14 +26,14 @@ export default class Cat {
 
     return new Promise((res: any, rej: any) => {
       this.getIdOfAllCats((cats: string[]) => {
-        if(cats.length === 0) {
-          rej('No SADD Members, Cat is undefined')
+        if (cats.length === 0) {
+          rej("No SADD Members, Cat is undefined");
         }
 
         cats.forEach((catHash: string, index: number) => {
           this.catbuilder.getCatsByHash(catHash, (data: any) => {
-            if(!data){
-              rej('Error to read data')
+            if (!data) {
+              rej("Error to read data");
             }
 
             myCats.push(this.format(catHash, data));
@@ -43,15 +43,15 @@ export default class Cat {
           });
         });
       });
-    })
+    });
   }
 
   private format(nameOfCat: string, response: any) {
     return {
       data: response,
-      name: nameOfCat
+      name: nameOfCat,
     };
-  };
+  }
 
   private getIdOfAllCats(cb?: (catsList: string[]) => void) {
     return this.catbuilder.getListOfCat(this.catModel.idManager, cb);

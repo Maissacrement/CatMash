@@ -10,14 +10,14 @@ const object: ICat[] = [
     actif: true,
     idAtelierApi: "string3",
     image: "string",
-    like: 0
+    like: 0,
   },
   {
     actif: true,
     idAtelierApi: "string64",
     image: "string2",
-    like: 0
-  }
+    like: 0,
+  },
 ];
 
 describe("Insert data on Redis module testing ...", () => {

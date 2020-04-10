@@ -2,10 +2,10 @@
   <div class="home">
     <div class="main">
       <div @click="increment()" class="left">
-        <Cat :borderColor="true" :urlImg="this.catImg.left" />
+        <Cat :borderColor="true" :urlImg="catImg.left" />
       </div>
       <div @click="decrement()" class="right">
-        <Cat :urlImg="''" />
+        <Cat :urlImg="catRight" />
       </div>
       <div class="top-out-flow">
         <img src="@/assets/image823.png" class="logo" />
@@ -22,11 +22,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import Print from '@/components/Print.vue';
+import { Component, Prop, Vue } from "vue-property-decorator";
+import Print from "@/components/Print.vue";
 import Cat from '@/components/Cat.vue';
-import RestProvider from '../providers/rest/rest';
-import { ICatResponse } from '../types/index';
+import RestProvider from "@/providers/rest/rest";
+import { ICatResponse } from "@/types/index";
 
 @Component({
   components: {
@@ -51,8 +51,18 @@ export default class Home extends Vue {
     };
   }
 
-  public mounted() {
-    this.loadCat();
+  /*
+  get catLeft() {
+    return this.cats.length > 0 ? this.cats[0].data.url : '';
+  }*/
+
+  get catRight() {
+    return this.catImg.left;
+  }
+
+  public async created() {
+    console.log('hello')
+    await this.loadCat();
   }
 
   public increment(): void {
@@ -71,9 +81,14 @@ export default class Home extends Vue {
     let result: ICatResponse[];
     try {
       result = await this.Rest.getCats();
-      this.cats = [...result];
+      result
+        .filter( (data: any) => !this.cats.includes(data))
+        .map( (cats: any) => {
+          this.cats.push(cats)
+        });
 
       // After fetch data
+
       this.catImg.left = this.cats[0].data.image;
 
     } catch (err) {

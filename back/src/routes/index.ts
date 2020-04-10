@@ -9,10 +9,7 @@ import { getCats, insertCat, likeACat } from "./endpoints/cat";
 // Router
 
 // GET
-router
-  .get("/like", likeACat)
-  .get("/cats", getCats)
-  .get("/*", BadRequest);
+router.get("/like", likeACat).get("/cats", getCats).get("/*", BadRequest);
 
 // POST
 router.post("/insert", insertCat).post("/*", BadRequest);

@@ -44,7 +44,7 @@ app.use(
     saveUninitialized: true,
     secret:
       process.env.SECRET_SESSION ||
-      "This secret need be never read in production"
+      "This secret need be never read in production",
   })
 );
 

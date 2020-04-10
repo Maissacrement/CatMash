@@ -19,7 +19,7 @@ export interface ICat {
 
 export interface ICatInit extends ICat {
   actif: actif;
-  like: like
+  like: like;
 }
 
 export interface ICatFormatNoStatic {
