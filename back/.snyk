@@ -1,8 +1,13 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.14.0
+version: v1.14.1
 ignore: {}
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   SNYK-JS-TREEKILL-536781:
     - ts-node-dev > tree-kill:
         patched: '2019-12-11T22:39:40.464Z'
+  SNYK-JS-LODASH-567746:
+    - kafka-node > lodash:
+        patched: '2020-04-30T22:41:22.764Z'
+    - kafka-node > async > lodash:
+        patched: '2020-04-30T22:41:22.764Z'
