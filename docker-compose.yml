@@ -1,20 +1,21 @@
 #redis:6.0-rc3-alpine
-version: "3"
+version: "3.8"
 services:
   catmashredis:
     image : redis:6.0-rc3-alpine
     privileged: true
-    ports :
-      - "6379:6379"
+    networks: 
+      - overlay
 
   catmashback:
     build : ./back
     container_name: "catmashback"
-    network_mode: host
     depends_on:
       - catmashredis
     env_file:
       - ./back/.env
+    networks: 
+      - overlay
     ports:
       - "6548:6548"
 
@@ -28,3 +29,11 @@ services:
       - catmashback
     ports:
       - 14525:80
+
+networks:
+  overlay:
+    ipam:
+      driver: default
+      config:
+          - subnet: 172.16.2.0/30
+            gateway: 172.16.2.1

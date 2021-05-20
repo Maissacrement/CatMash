@@ -38,10 +38,10 @@ const tryExecuteCreateCat = (exec: any, res: any) => {
 
 const createCat = async (listOfCats: ICat[], res: any) => {
   const cats: ICat[] = listOfCats;
-  const getCats = await catBuilder.formatCat(cats);
+  const awaitCats = await catBuilder.formatCat(cats);
 
   // Add cat on queue builder
-  catBuilder.queuePush(getCats);
+  catBuilder.queuePush(awaitCats);
 
   const addOnRedis = catBuilder.queuePushOnRedis(myCatModel.getCatModel());
 
@@ -63,6 +63,7 @@ const insertCat = async (_: any, res: any, next: any) => {
   try {
     // cats = await axios.get("https://latelier.co/data/cats.json");
 
+    console.log('cat', FakeApi)
     cats = FakeApi;
     const isDefined = Object.prototype.hasOwnProperty.call(cats, "images");
     const opts = {

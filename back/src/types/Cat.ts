@@ -34,7 +34,7 @@ export interface ICatFormat extends ICatFormatNoStatic {
   like: like;
 }
 
-export interface lAtelier {
+export interface IlAtelier {
   id: string;
   url: string;
 }

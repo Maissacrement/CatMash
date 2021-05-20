@@ -2,7 +2,7 @@ import {
   ICatModel,
   ICatFormat,
   ICatFormatNoStatic,
-  lAtelier,
+  IlAtelier,
 } from "../../types/index";
 import RedisManager from "./RedisManager";
 
@@ -76,9 +76,9 @@ export default class CatBuilder {
   }
 
   // Format to Cats
-  public formatCat(cats: lAtelier[]): Promise<ICatFormatNoStatic[]> {
+  public formatCat(cats: IlAtelier[]): Promise<ICatFormatNoStatic[]> {
     return new Promise((resolve: any, reject: any) => {
-      let listOfCat: ICatFormatNoStatic[] = [];
+      const listOfCat: ICatFormatNoStatic[] = [];
 
       cats.forEach((datas: any) => {
         listOfCat.push(this.parseToCatsModel(datas));
@@ -92,7 +92,7 @@ export default class CatBuilder {
   }
 
   // object to Cats Model format
-  private parseToCatsModel(data: lAtelier): ICatFormat {
+  private parseToCatsModel(data: IlAtelier): ICatFormat {
     return {
       image: data.url,
       idAtelierApi: data.id,
