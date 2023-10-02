@@ -1,7 +1,7 @@
 # -------- Vuejs --------
 
 # Image Location
-FROM node:11.14.0-alpine
+FROM node:16.19.0-alpine
 
 # MAINTENER
 MAINTAINER Maissacrement <emmariodelar@gmail.com>
@@ -10,15 +10,20 @@ MAINTAINER Maissacrement <emmariodelar@gmail.com>
 WORKDIR /app
 
 COPY package.json .
+RUN yarn global add npm@8.19.3 fork-ts-checker-webpack-plugin-v5@latest
 RUN yarn --production --ignore-optional --verbose && \
-    mkdir dist/
+    mkdir dist
 
 COPY . .
 
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
+
+RUN yarn add fork-ts-checker-webpack-plugin-v5@latest
+
 RUN ["yarn","build", "--verbose" ]
-
-# -------- NGINX --------
-
+#
+## -------- NGINX --------
+#
 FROM nginx
 RUN mkdir /app
 COPY --from=0 /app/dist /app

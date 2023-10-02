@@ -2,7 +2,7 @@
 import Cat from "../../db/model/Cat";
 import CatBuilder from "../../db/model/CatBuilder";
 import { ICat } from "../../types/index";
-import FakeApi from "../../api/catsFakeApi"
+import FakeApi from "../../api/catsFakeApi";
 
 const catBuilder: CatBuilder = new CatBuilder();
 const myCatModel: Cat = new Cat();
@@ -63,7 +63,7 @@ const insertCat = async (_: any, res: any, next: any) => {
   try {
     // cats = await axios.get("https://latelier.co/data/cats.json");
 
-    console.log('cat', FakeApi)
+    // console.log("cat", FakeApi);
     cats = FakeApi;
     const isDefined = Object.prototype.hasOwnProperty.call(cats, "images");
     const opts = {

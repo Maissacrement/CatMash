@@ -5,7 +5,7 @@ import express = require("express");
 import session = require("express-session");
 
 // Create a new express application instance
-const app: express.Application = express();
+const app = express();
 
 // Function
 const parseAnyToNumber = (anyTypeOfValue: any): number => {
@@ -51,11 +51,7 @@ app.use(
 // Function
 
 // Cors config
-const header = (
-  _: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
+const header = (_: express.Request, res: any, next: express.NextFunction) => {
   // Set header
   res.header("Access-Control-Allow-Origin", "*");
   res.header(

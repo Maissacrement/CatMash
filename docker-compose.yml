@@ -4,8 +4,9 @@ services:
   catmashredis:
     image : redis:6.0-rc3-alpine
     privileged: true
-    networks: 
-      - overlay
+    networks:
+      cluster:
+        ipv4_address: 172.100.30.3
 
   catmashback:
     build : ./back
@@ -14,10 +15,13 @@ services:
       - catmashredis
     env_file:
       - ./back/.env
-    networks: 
-      - overlay
     ports:
       - "6548:6548"
+    networks:
+      cluster:
+        ipv4_address: 172.100.30.2
+    extra_hosts:
+      - "catmashredis:172.100.30.3"
 
   catmashfront:
     build : ./front
@@ -31,9 +35,9 @@ services:
       - 14525:80
 
 networks:
-  overlay:
+  cluster:
+    driver: bridge
     ipam:
-      driver: default
       config:
-          - subnet: 172.16.2.0/30
-            gateway: 172.16.2.1
+        - subnet: 172.100.30.0/24
+          gateway: 172.100.30.1

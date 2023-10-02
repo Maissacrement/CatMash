@@ -14,3 +14,4 @@ lib_test
 *.njsproj
 *.sln
 *.sw?
+yarn.lock

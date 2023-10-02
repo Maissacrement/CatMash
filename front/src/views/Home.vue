@@ -12,10 +12,7 @@
       </div>
       <div class="bottom-out-flow">
         <Print text="Voir les plus beaux chats" />
-        <Print
-          :text="nbVotes"
-          appendText="votes"
-        />
+        <Print :text="nbVotes" appendText="votes" />
       </div>
     </div>
   </div>
