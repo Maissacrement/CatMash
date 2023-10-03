@@ -15,15 +15,21 @@ spec:
       containers:
       - name: redis
         image: redis:6.0-rc3-alpine
+        ports:
+        - containerPort: 6379
       - name: back
         image: maissacrement/catmash-back
         env:
         - name: PORT
           value: '6548'
         - name: REDIS_ADDRESS
-          value: catmash-service
-      - name: front
+          value: private-network
+        ports:
+        - containerPort: 6548
+      - name: front-end
         image: maissacrement/catmash-front
+        ports:
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
@@ -41,3 +47,16 @@ spec:
     port: 6548
     targetPort: 6548
     nodePort: 30654
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: private-network
+spec:
+  type: ClusterIP
+  selector:
+    app: catmash
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
