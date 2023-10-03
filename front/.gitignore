@@ -21,3 +21,4 @@ yarn-*
 *.njsproj
 *.sln
 *.sw?
+.env

@@ -8,6 +8,10 @@ import axios from 'axios';
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
 
+import dotenv from 'dotenv'
+
+dotenv.config()
+
 new Vue({
   router,
   store,

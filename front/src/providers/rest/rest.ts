@@ -9,7 +9,11 @@ export default class RestProvider {
   private apiUrl: string;
   private $http: any;
   private jsonHeader = {
-    'Content-Type': 'application/json',
+    'Content-type': 'application/json;charset=utf-8',
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Headers':
+      'Origin, X-Requested-With, Content-Type, Authorization, Accept',
+    'Access-Control-Allow-Origin': '*',
   };
 
   constructor() {

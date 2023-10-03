@@ -56,8 +56,10 @@ const header = (_: express.Request, res: any, next: express.NextFunction) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Authorization, Accept"
   );
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Credentials', 'true');
   next();
 };
 

@@ -21,14 +21,14 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import Print from "@/components/Print.vue";
-import Cat from '@/components/Cat.vue';
+import Cat from "@/components/Cat.vue";
 import RestProvider from "@/providers/rest/rest";
 import { ICatResponse } from "@/types/index";
 
 @Component({
   components: {
     Print,
-    Cat,
+    Cat
   },
 })
 export default class Home extends Vue {

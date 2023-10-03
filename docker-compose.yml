@@ -33,6 +33,8 @@ services:
       - catmashback
     ports:
       - 14525:80
+    environment:
+      VUE_APP_DOMAIN: 'http://0.0.0.0:6548'
 
 networks:
   cluster:
